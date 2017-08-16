@@ -5,10 +5,9 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import pl.khuzzuk.battles.ui.CardViewer;
-import pl.khuzzuk.messaging.Bus;
 
 public class Battles extends Application {
-    public static final Bus BUS = Bus.initializeBus(false);
+    //public static final Bus BUS = Bus.initializeBus(false);
     public static void main(String[] args) {
         launch(args);
     }
@@ -16,7 +15,7 @@ public class Battles extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         stage.setTitle("Battles");
-        stage.setScene(new Scene(new Group(CardViewer.instance())));
+        stage.setScene(new Scene(new Group(CardViewer.instance("file:cards/rome-back.png"))));
         stage.show();
     }
 }

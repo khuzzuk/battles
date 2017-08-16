@@ -1,12 +1,11 @@
 plugins {
     id 'io.franzbecker.gradle-lombok' version '1.8'
+    id 'java'
+    id 'groovy'
 }
 
 group 'pl.khuzzuk'
 version '1.0-SNAPSHOT'
-
-apply plugin: 'groovy'
-apply plugin: 'java'
 
 sourceCompatibility = 1.8
 
@@ -21,10 +20,10 @@ repositories {
 sourceSets {
     main {
         java {
-            srcDirs = []
+            srcDirs = ['src/main/java']
         }
         groovy {
-            srcDirs = ['src/main/java']
+            srcDirs = []
         }
     }
 
