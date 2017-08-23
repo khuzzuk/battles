@@ -28,28 +28,28 @@ class CardContentFrame extends AnchorPane implements Hexagonal, Decorative {
 
         ObservableList<PathElement> outerElements = outer.getElements();
         ObservableList<PathElement> innerElements = inner.getElements();
+        //drawWith(0, 1, new int[]{4, 3, 2}, true);
+        //drawWith(0, 3, new int[]{3, 2, 1, 0, 5}, true);
+        //drawWith(0, 1, new int[]{0, 5}, false);
         drawWith(0, 1, new int[]{4, 3, 2});
-        drawWith(0, 3, new int[]{3, 2, 1, 0, 5});
-        drawWith(0, 1, new int[]{0, 5});
-        //drawWith(0, 1, new int[]{4, 3, 2});
-        //drawWith(0, 3, new int[]{3, 2});
-        //drawWith(0, 5, new int[]{3, 2, 1});
-        //drawWith(1, 6, new int[]{2, 1});
-        //drawWith(2, 7, new int[]{2, 1, 0});
-        //drawWith(3, 6, new int[]{1});
-        //drawWith(4, 7, new int[]{2, 1, 0});
-        //drawWith(5, 6, new int[]{1});
-        //drawWith(6, 7, new int[]{2, 1, 0});
-        //drawWith(7, 6, new int[]{1, 0, 5});
-        //drawWith(7, 4, new int[]{0, 5});
-        //drawWith(7, 2, new int[]{0, 5});
-        //drawWith(7, 0, new int[]{0, 5, 4});
-        //drawWith(6, -1, new int[]{5, 4, 3});
-        //drawWith(5, 0, new int[]{4});
-        //drawWith(4, -1, new int[]{5, 4, 3});
-        //drawWith(3, 0, new int[]{4});
-        //drawWith(2, -1, new int[]{5, 4, 3});
-        //drawWith(1, 0, new int[]{4});
+        drawWith(0, 3, new int[]{3, 2});
+        drawWith(0, 5, new int[]{3, 2, 1});
+        drawWith(1, 6, new int[]{2, 1});
+        drawWith(2, 7, new int[]{2, 1, 0});
+        drawWith(3, 6, new int[]{1});
+        drawWith(4, 7, new int[]{2, 1, 0});
+        drawWith(5, 6, new int[]{1});
+        drawWith(6, 7, new int[]{2, 1, 0});
+        drawWith(7, 6, new int[]{1, 0, 5});
+        drawWith(7, 4, new int[]{0, 5});
+        drawWith(7, 2, new int[]{0, 5});
+        drawWith(7, 0, new int[]{0, 5, 4});
+        drawWith(6, -1, new int[]{5, 4, 3});
+        drawWith(5, 0, new int[]{4});
+        drawWith(4, -1, new int[]{5, 4, 3});
+        drawWith(3, 0, new int[]{4});
+        drawWith(2, -1, new int[]{5, 4, 3});
+        drawWith(1, 0, new int[]{4, 3});
         outerElements.add(new ClosePath());
         innerElements.add(new ClosePath());
 
@@ -79,11 +79,15 @@ class CardContentFrame extends AnchorPane implements Hexagonal, Decorative {
     private void drawWith(int row, int col, int[] points) {
         LineTo[] drawings = drawLines(getCol(col, R), getRow(row, R), R, points);
         LineTo[] innerDrawings = new LineTo[drawings.length];
-        for (int i = 0; i < drawings.length; i++) {
+        int size = drawings.length - 1;
+        for (int i = 0; i < size; i++) {
             innerDrawings[i] = new LineTo(
                     translateX(drawings[i].getX(), points[i]),
                     translateY(drawings[i].getY(), points[i]));
         }
+        innerDrawings[size] = new LineTo(
+                translateXBordered(drawings[size].getX(), points[size]),
+                translateYBordered(drawings[size].getY(), points[size]));
         outer.getElements().addAll(drawings);
         inner.getElements().addAll(innerDrawings);
     }
@@ -103,7 +107,7 @@ class CardContentFrame extends AnchorPane implements Hexagonal, Decorative {
             case 5:
                 return x + frameScale;
             default:
-                    return x;
+                return x;
         }
     }
 
@@ -112,34 +116,34 @@ class CardContentFrame extends AnchorPane implements Hexagonal, Decorative {
             case 0:
                 return y - frameScale;
             case 1:
-                return y - frameScale;
+                return y - frameScale / 2;
             case 2:
-                return y + frameScale;
+                return y + frameScale / 2;
             case 3:
                 return y + frameScale;
             case 4:
-                return y + frameScale;
+                return y + frameScale / 2;
             case 5:
-                return y - frameScale;
+                return y - frameScale / 2;
             default:
-                    return y;
+                return y;
         }
     }
 
     private double translateXBordered(double x, int position) {
         switch (position) {
             case 0:
-                return x;
+                return x - frameScale;
             case 1:
                 return x - frameScale;
             case 2:
-                return x - frameScale;
-            case 3:
                 return x;
+            case 3:
+                return x + frameScale;
             case 4:
                 return x + frameScale;
             case 5:
-                return x + frameScale;
+                return x;
             default:
                 return x;
         }
@@ -148,15 +152,15 @@ class CardContentFrame extends AnchorPane implements Hexagonal, Decorative {
     private double translateYBordered(double y, int position) {
         switch (position) {
             case 0:
-                return y - frameScale;
+                return y - frameScale / 2;
             case 1:
-                return y - frameScale;
+                return y + frameScale / 2;
             case 2:
                 return y + frameScale;
             case 3:
-                return y + frameScale;
+                return y + frameScale / 2;
             case 4:
-                return y + frameScale;
+                return y - frameScale / 2;
             case 5:
                 return y - frameScale;
             default:
