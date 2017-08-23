@@ -10,13 +10,12 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 class CardContentFrame extends AnchorPane implements Hexagonal, Decorative {
     private final int R;
-    private final int r;
     private double frameScale = 6;
     private Path outer;
     private Path inner;
 
     static CardContentFrame get(Image background, int hexSize) {
-        CardContentFrame frame = new CardContentFrame(hexSize, (int) (hexSize * 0.7));
+        CardContentFrame frame = new CardContentFrame(hexSize);
         frame.setupShape(background);
         return frame;
     }
@@ -28,9 +27,6 @@ class CardContentFrame extends AnchorPane implements Hexagonal, Decorative {
 
         ObservableList<PathElement> outerElements = outer.getElements();
         ObservableList<PathElement> innerElements = inner.getElements();
-        //drawWith(0, 1, new int[]{4, 3, 2}, true);
-        //drawWith(0, 3, new int[]{3, 2, 1, 0, 5}, true);
-        //drawWith(0, 1, new int[]{0, 5}, false);
         drawWith(0, 1, new int[]{4, 3, 2});
         drawWith(0, 3, new int[]{3, 2});
         drawWith(0, 5, new int[]{3, 2, 1});
@@ -97,13 +93,11 @@ class CardContentFrame extends AnchorPane implements Hexagonal, Decorative {
             case 0:
                 return x;
             case 1:
-                return x - frameScale;
             case 2:
                 return x - frameScale;
             case 3:
                 return x;
             case 4:
-                return x + frameScale;
             case 5:
                 return x + frameScale;
             default:
@@ -133,17 +127,13 @@ class CardContentFrame extends AnchorPane implements Hexagonal, Decorative {
     private double translateXBordered(double x, int position) {
         switch (position) {
             case 0:
-                return x - frameScale;
             case 1:
                 return x - frameScale;
             case 2:
                 return x;
             case 3:
-                return x + frameScale;
             case 4:
                 return x + frameScale;
-            case 5:
-                return x;
             default:
                 return x;
         }
