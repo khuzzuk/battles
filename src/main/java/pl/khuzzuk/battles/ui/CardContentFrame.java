@@ -10,12 +10,13 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 class CardContentFrame extends AnchorPane implements Hexagonal, Decorative {
     private final int R;
-    private double frameScale = 6;
+    private double frameScale;
     private Path outer;
     private Path inner;
 
     static CardContentFrame get(Image background, int hexSize) {
         CardContentFrame frame = new CardContentFrame(hexSize);
+        frame.frameScale = frame.R / 4;
         frame.setupShape(background);
         return frame;
     }
