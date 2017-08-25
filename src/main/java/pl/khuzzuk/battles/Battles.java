@@ -17,7 +17,7 @@ public class Battles extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         stage.setTitle("Battles");
-        DeckViewer deckViewer = DeckViewer.getInstance(1000, 800);
+        DeckViewer deckViewer = DeckViewer.getInstance(1800, 1100);
         CardStyle romeStyle = CardStyle.builder().backgroundPath("file:cards/rome-back.png").build();
         Card card = Card.builder()
                 .defence(3)
@@ -25,6 +25,7 @@ public class Battles extends Application {
                 .strength(3)
                 .cost(6)
                 .style(romeStyle).build();
+        deckViewer.addCard(card);
         deckViewer.addCard(card);
         deckViewer.addCard(card);
         deckViewer.addCard(card);

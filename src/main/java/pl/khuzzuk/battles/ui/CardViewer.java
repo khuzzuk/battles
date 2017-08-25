@@ -24,7 +24,7 @@ public class CardViewer extends AnchorPane implements Decorative {
     }
 
     private CardViewer prepareFrame(Image backgroundImage, int size) {
-        Rectangle background = new Rectangle(size * 10, size * 18);
+        Rectangle background = new Rectangle(size * 10, size * 16);
         background.setArcWidth(size);
         background.setArcHeight(size);
         setBackground(backgroundImage, background);
@@ -32,13 +32,13 @@ public class CardViewer extends AnchorPane implements Decorative {
         background.setStroke(Color.BLACK);
 
         this.frame = CardContentFrame.get(card, backgroundImage, size);
-        AnchorPane.setTopAnchor(frame, size * 4d);
+        AnchorPane.setTopAnchor(frame, size * 3d);
         AnchorPane.setBottomAnchor(frame, size / 2d);
         AnchorPane.setLeftAnchor(frame, size / 2d);
         AnchorPane.setRightAnchor(frame, size / 2d);
 
         this.header = CardHeader.get(backgroundImage, size * 8, "Card");
-        AnchorPane.setTopAnchor(header, size / 2d);
+        AnchorPane.setTopAnchor(header, size / 3d);
         AnchorPane.setBottomAnchor(header, frame.getHeight() + 10d);
         AnchorPane.setLeftAnchor(header, 10d + size / 2);
         AnchorPane.setRightAnchor(header, 10d + size / 2);
