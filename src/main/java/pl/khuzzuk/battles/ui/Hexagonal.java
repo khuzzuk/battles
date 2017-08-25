@@ -1,7 +1,9 @@
 package pl.khuzzuk.battles.ui;
 
+import javafx.scene.shape.ClosePath;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
+import javafx.scene.shape.Path;
 
 /**
  * Points are measured ordinal where 3 is the top point, 0 is the bottom and it is counted counter clockwise: <br/>
@@ -32,5 +34,12 @@ public interface Hexagonal {
 
     default double getY(double y, double r, double radians) {
         return Math.cos(radians) * r + y;
+    }
+
+    default Path getHex(int x, int y, int r) {
+        Path icon = new Path(getStartingPoint(x, y, r, 0));
+        icon.getElements().addAll(drawLines(x, y, r, new int[]{1, 2, 3, 4, 5}));
+        icon.getElements().addAll(new ClosePath());
+        return icon;
     }
 }

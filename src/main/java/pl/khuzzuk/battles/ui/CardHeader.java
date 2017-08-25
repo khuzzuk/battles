@@ -22,7 +22,7 @@ public class CardHeader extends AnchorPane implements Decorative {
 
         Rectangle inner = new Rectangle(width - 10, height - 10);
         header.setBackground(background, inner);
-        header.addInner(inner, width / 2, height / 2, width / 2);
+        header.addInner(inner, width / 2, height / 2, width);
         AnchorPane.setTopAnchor(inner, 5d);
         AnchorPane.setLeftAnchor(inner, 5d);
 
