@@ -1,15 +1,18 @@
 package pl.khuzzuk.battles.ui;
 
+import javafx.animation.ScaleTransition;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.util.Duration;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import pl.khuzzuk.battles.cards.Card;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class CardViewer extends AnchorPane implements Decorative {
@@ -20,7 +23,8 @@ public class CardViewer extends AnchorPane implements Decorative {
 
     public static CardViewer instance(Card card) {
         CardViewer viewer = new CardViewer(card);
-        return viewer.prepareFrame(cacheOfImages.computeIfAbsent(card.getStyle().getBackgroundPath(), Image::new), 25);
+        viewer.prepareFrame(cacheOfImages.computeIfAbsent(card.getStyle().getBackgroundPath(), Image::new), 25);
+        return viewer;
     }
 
     private CardViewer prepareFrame(Image backgroundImage, int size) {

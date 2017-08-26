@@ -1,5 +1,6 @@
 package pl.khuzzuk.battles.ui;
 
+import javafx.animation.ScaleTransition;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
@@ -8,12 +9,10 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.shape.*;
 import javafx.scene.text.Font;
+import javafx.util.Duration;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import pl.khuzzuk.battles.cards.Card;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 class CardContentFrame extends AnchorPane implements Hexagonal, Decorative {
@@ -24,14 +23,8 @@ class CardContentFrame extends AnchorPane implements Hexagonal, Decorative {
     private Path outer;
     private Path inner;
 
-    private Path strength;
-    private Path defence;
-    private Path speed;
-    private List<Path> equipment;
-
     static CardContentFrame get(Card card, Image background, int hexSize) {
         CardContentFrame frame = new CardContentFrame(hexSize, background);
-        frame.equipment = new ArrayList<>();
         frame.frameScale = frame.R / 8;
         frame.iconsR = (int) (frame.R - frame.frameScale * 2);
         frame.setupShape();
@@ -117,7 +110,6 @@ class CardContentFrame extends AnchorPane implements Hexagonal, Decorative {
 
     private void addIcon(int row, int col, String content) {
         int x = getCol(col, R);
-        int y = getRow(row, R);
         Path icon = getHex(0, 0, iconsR);
         setBackground(background, icon);
         addDropShadow(icon);

@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class DeckViewer extends AnchorPane {
+public class DeckViewer extends AnchorPane implements Focusable {
     private List<CardViewer> deck;
     private int frameSize;
     public static DeckViewer getInstance(int windowWidth, int windowHeight) {
@@ -22,7 +22,8 @@ public class DeckViewer extends AnchorPane {
     }
 
     public void addCard(Card card) {
-        deck.add(CardViewer.instance(card));
+        CardViewer viewer = CardViewer.instance(card);
+        deck.add(viewer);
     }
 
     public void repaintDeck() {
@@ -30,7 +31,7 @@ public class DeckViewer extends AnchorPane {
         int space = (int) (getMaxWidth() / deck.size() - frameSize);
         for (int i = 0; i < deck.size(); i++) {
             AnchorPane.setLeftAnchor(deck.get(i), (double) (space * i + frameSize));
-            AnchorPane.setRightAnchor(deck.get(i), (double) frameSize);
+            setFocusAnimation(deck.get(i));
             getChildren().add(deck.get(i));
         }
     }
