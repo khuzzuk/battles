@@ -4,6 +4,7 @@ import javafx.animation.ScaleTransition;
 import javafx.scene.Node;
 import javafx.util.Duration;
 
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public interface Focusable {
@@ -20,19 +21,26 @@ public interface Focusable {
         focusLostTransition.setOnFinished(e -> animating.set(false));
 
         AtomicBoolean enlarged = new AtomicBoolean(false);
-        node.setOnMouseEntered(event -> {
+        node.setOnMouseEntered(Optional.ofNullable(node.getOnMouseEntered())
+                .orElseGet(() -> event -> {
             if (!enlarged.get() && !animating.get()) {
                 animating.set(true);
                 focusTransition.play();
                 enlarged.set(true);
             }
-        });
-        node.setOnMouseExited(event -> {
+        }));
+        node.setOnMouseExited(Optional.ofNullable(node.getOnMouseExited())
+                .orElseGet(() -> event -> {
             if (enlarged.get() && !animating.get()) {
                 animating.set(true);
                 focusLostTransition.play();
                 enlarged.set(false);
             }
-        });
+        }));
+    }
+
+    default void removeFocusAnimation(Node node) {
+        node.setOnMouseEntered(null);
+        node.setOnMouseExited(null);
     }
 }

@@ -1,33 +1,28 @@
 package pl.khuzzuk.battles.ui;
 
-import javafx.animation.ScaleTransition;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import javafx.util.Duration;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import pl.khuzzuk.battles.cards.Card;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public class CardViewer extends AnchorPane implements Decorative {
-    private static final Map<String, Image> cacheOfImages = new HashMap<String, Image>();
+class CardViewer extends AnchorPane implements Decorative {
+    private static final Map<String, Image> cacheOfImages = new HashMap<>();
     private final Card card;
-    private CardContentFrame frame;
-    private CardHeader header;
 
-    public static CardViewer instance(Card card) {
+    public static CardViewer instance(Card card, int areaHeight) {
         CardViewer viewer = new CardViewer(card);
-        viewer.prepareFrame(cacheOfImages.computeIfAbsent(card.getStyle().getBackgroundPath(), Image::new), 25);
+        viewer.prepareFrame(cacheOfImages.computeIfAbsent(card.getStyle().getBackgroundPath(), Image::new), areaHeight / 18);
         return viewer;
     }
 
-    private CardViewer prepareFrame(Image backgroundImage, int size) {
+    private void prepareFrame(Image backgroundImage, int size) {
         Rectangle background = new Rectangle(size * 10, size * 16);
         background.setArcWidth(size);
         background.setArcHeight(size);
@@ -35,21 +30,18 @@ public class CardViewer extends AnchorPane implements Decorative {
         background.setStrokeWidth(1d);
         background.setStroke(Color.BLACK);
 
-        this.frame = CardContentFrame.get(card, backgroundImage, size);
+        CardContentFrame frame = CardContentFrame.get(card, backgroundImage, size);
         AnchorPane.setTopAnchor(frame, size * 3d);
         AnchorPane.setBottomAnchor(frame, size / 2d);
         AnchorPane.setLeftAnchor(frame, size / 2d);
         AnchorPane.setRightAnchor(frame, size / 2d);
 
-        this.header = CardHeader.get(backgroundImage, size * 8, "Card");
+        CardHeader header = CardHeader.get(backgroundImage, size * 8, "Card");
         AnchorPane.setTopAnchor(header, size / 3d);
         AnchorPane.setBottomAnchor(header, frame.getHeight() + 10d);
         AnchorPane.setLeftAnchor(header, 10d + size / 2);
         AnchorPane.setRightAnchor(header, 10d + size / 2);
 
         getChildren().addAll(background, frame, header);
-        //setBackground(new Background(new BackgroundImage(
-          //      backgroundImage, BackgroundRepeat.REPEAT, BackgroundRepeat.REPEAT, null, null)));
-        return this;
     }
 }
