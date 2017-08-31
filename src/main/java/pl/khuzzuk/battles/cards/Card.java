@@ -10,6 +10,7 @@ import java.util.List;
 @Builder
 @Getter
 public class Card {
+    private String name;
     private int strength;
     private int defence;
     private Speed speed;

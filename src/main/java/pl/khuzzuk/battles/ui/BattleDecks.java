@@ -43,13 +43,13 @@ class BattleDecks extends AnchorPane {
 
     void drop(CardViewer cardViewer, double x) {
         if (x < getWidth() / 3) {
-            leftDeck.addCard(cardViewer);
+            leftDeck.addCard(cardViewer, x);
             leftDeck.repaintDeck();
         } else if (x < getWidth() / 3 * 2) {
-            centerDeck.addCard(cardViewer);
+            centerDeck.addCard(cardViewer, x - getWidth());
             centerDeck.repaintDeck();
         } else {
-            rightDeck.addCard(cardViewer);
+            rightDeck.addCard(cardViewer, x - getWidth() * 2);
             rightDeck.repaintDeck();
         }
     }

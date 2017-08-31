@@ -7,7 +7,7 @@ import javafx.stage.Stage;
 import pl.khuzzuk.battles.cards.Card;
 import pl.khuzzuk.battles.cards.CardStyle;
 import pl.khuzzuk.battles.model.Speed;
-import pl.khuzzuk.battles.ui.PlayViewer;
+import pl.khuzzuk.battles.ui.BattleSetupViewer;
 
 public class Battles extends Application {
     //public static final Bus BUS = Bus.initializeBus(false);
@@ -22,23 +22,27 @@ public class Battles extends Application {
         Group root = new Group();
         stage.setScene(new Scene(root));
         stage.show();
-        PlayViewer playViewer = PlayViewer.get((int) stage.getScene().getWidth(), (int) stage.getScene().getHeight());
+        BattleSetupViewer battleSetupViewer = BattleSetupViewer.get((int) stage.getScene().getWidth(), (int) stage.getScene().getHeight());
         CardStyle romeStyle = CardStyle.builder().backgroundPath("file:cards/rome-back.png").build();
-        Card card = Card.builder()
+        battleSetupViewer.addCardToDeck(getCard(romeStyle, "Card 001"));
+        battleSetupViewer.addCardToDeck(getCard(romeStyle, "Card 002"));
+        battleSetupViewer.addCardToDeck(getCard(romeStyle, "Card 003"));
+        battleSetupViewer.addCardToDeck(getCard(romeStyle, "Card 004"));
+        battleSetupViewer.addCardToDeck(getCard(romeStyle, "Card 005"));
+        battleSetupViewer.addCardToDeck(getCard(romeStyle, "Card 006"));
+        battleSetupViewer.addCardToDeck(getCard(romeStyle, "Card 007"));
+        battleSetupViewer.addCardToDeck(getCard(romeStyle, "Card 008"));
+        battleSetupViewer.showDeck();
+        root.getChildren().add(battleSetupViewer);
+    }
+
+    private Card getCard(CardStyle style, String name) {
+        return Card.builder()
+                .name(name)
                 .defence(3)
                 .speed(Speed.SLOW)
                 .strength(3)
                 .cost(6)
-                .style(romeStyle).build();
-        playViewer.addCardToDeck(card);
-        playViewer.addCardToDeck(card);
-        playViewer.addCardToDeck(card);
-        playViewer.addCardToDeck(card);
-        playViewer.addCardToDeck(card);
-        playViewer.addCardToDeck(card);
-        playViewer.addCardToDeck(card);
-        playViewer.addCardToDeck(card);
-        playViewer.showDeck();
-        root.getChildren().add(playViewer);
+                .style(style).build();
     }
 }

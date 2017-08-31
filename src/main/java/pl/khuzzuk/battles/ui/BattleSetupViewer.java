@@ -8,22 +8,21 @@ import lombok.NoArgsConstructor;
 import pl.khuzzuk.battles.cards.Card;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class PlayViewer extends AnchorPane {
+public class BattleSetupViewer extends AnchorPane {
     private DeckViewer deck;
-    private Rectangle deckArea;
     private BattleDecks playerBattleDeck;
 
-    public static PlayViewer get(int width, int height) {
-        PlayViewer playViewer = new PlayViewer();
-        playViewer.setWidth(width);
-        playViewer.setHeight(height);
-        playViewer.setupPlayerTable();
-        playViewer.setupDeckViewer();
-        return playViewer;
+    public static BattleSetupViewer get(int width, int height) {
+        BattleSetupViewer viewer = new BattleSetupViewer();
+        viewer.setWidth(width);
+        viewer.setHeight(height);
+        viewer.setupPlayerTable();
+        viewer.setupDeckViewer();
+        return viewer;
     }
 
     private void setupDeckViewer() {
-        deckArea = new Rectangle(getWidth(), getHeight() / 4);
+        Rectangle deckArea = new Rectangle(getWidth(), getHeight() / 4);
         deck = DeckViewer.getInstance((int) getWidth(), (int) getHeight() / 4);
         double topAnchor = getHeight() / 4 * 3;
         AnchorPane.setTopAnchor(deckArea, topAnchor);
@@ -48,6 +47,7 @@ public class PlayViewer extends AnchorPane {
             AnchorPane.setLeftAnchor(cardViewer, event.getSceneX() - cardViewer.getWidth() / 2);
             AnchorPane.setTopAnchor(cardViewer, event.getSceneY() - cardViewer.getHeight() / 2);
             getChildren().add(cardViewer);
+            deck.repaintDeck();
         });
 
         cardViewer.setOnMouseDragged(event -> {
@@ -67,7 +67,7 @@ public class PlayViewer extends AnchorPane {
         } else {
             playerBattleDeck.removeCard(cardViewer);
             playerBattleDeck.repaintDecks();
-            deck.addCard(cardViewer);
+            deck.addCard(cardViewer, event.getX());
             deck.repaintDeck();
         }
     }

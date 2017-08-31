@@ -36,7 +36,7 @@ class CardViewer extends AnchorPane implements Decorative {
         AnchorPane.setLeftAnchor(frame, size / 2d);
         AnchorPane.setRightAnchor(frame, size / 2d);
 
-        CardHeader header = CardHeader.get(backgroundImage, size * 8, "Card");
+        CardHeader header = CardHeader.get(backgroundImage, size * 8, card.getName());
         AnchorPane.setTopAnchor(header, size / 3d);
         AnchorPane.setBottomAnchor(header, frame.getHeight() + 10d);
         AnchorPane.setLeftAnchor(header, 10d + size / 2);
