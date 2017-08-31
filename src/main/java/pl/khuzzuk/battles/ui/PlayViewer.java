@@ -23,9 +23,9 @@ public class PlayViewer extends AnchorPane {
     }
 
     private void setupDeckViewer() {
-        deckArea = new Rectangle(getWidth(), getHeight() / 3);
-        deck = DeckViewer.getInstance((int) getWidth(), (int) getHeight());
-        double topAnchor = getHeight() / 3 * 2;
+        deckArea = new Rectangle(getWidth(), getHeight() / 4);
+        deck = DeckViewer.getInstance((int) getWidth(), (int) getHeight() / 4);
+        double topAnchor = getHeight() / 4 * 3;
         AnchorPane.setTopAnchor(deckArea, topAnchor);
         AnchorPane.setLeftAnchor(deckArea, 0d);
         AnchorPane.setTopAnchor(deck, topAnchor);
@@ -34,9 +34,9 @@ public class PlayViewer extends AnchorPane {
     }
 
     private void setupPlayerTable() {
-        double topAnchor = getHeight() / 3;
+        double topAnchor = getHeight() / 4;
         playerBattleDeck = BattleDecks.get(getWidth(), topAnchor);
-        AnchorPane.setTopAnchor(playerBattleDeck, topAnchor);
+        AnchorPane.setTopAnchor(playerBattleDeck, topAnchor * 2);
         AnchorPane.setLeftAnchor(playerBattleDeck, 0d);
         getChildren().addAll(playerBattleDeck);
     }

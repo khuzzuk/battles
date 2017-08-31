@@ -15,7 +15,7 @@ class DeckViewer extends AnchorPane implements Focusable {
     static DeckViewer getInstance(int windowWidth, int windowHeight) {
         DeckViewer viewer = new DeckViewer();
         viewer.setMaxWidth(windowWidth * 0.9);
-        viewer.setMaxHeight(windowHeight / 3);
+        viewer.setMaxHeight(windowHeight);
         viewer.frameSize = (int) (viewer.getWidth() / 10);
         viewer.deck = new ArrayList<>();
         return viewer;
