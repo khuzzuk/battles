@@ -16,7 +16,7 @@ class CardViewer extends AnchorPane implements Decorative {
     private static final Map<String, Image> cacheOfImages = new HashMap<>();
     private final Card card;
 
-    public static CardViewer instance(Card card, int areaHeight) {
+    static CardViewer instance(Card card, int areaHeight) {
         CardViewer viewer = new CardViewer(card);
         viewer.prepareFrame(cacheOfImages.computeIfAbsent(card.getStyle().getBackgroundPath(), Image::new), areaHeight / 18);
         return viewer;

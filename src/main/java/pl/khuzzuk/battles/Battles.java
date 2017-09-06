@@ -4,14 +4,15 @@ import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import pl.khuzzuk.battles.cards.Card;
-import pl.khuzzuk.battles.cards.CardStyle;
-import pl.khuzzuk.battles.model.Speed;
+import pl.khuzzuk.battles.EventTypes.Container;
+import pl.khuzzuk.battles.cards.CardRepository;
 import pl.khuzzuk.battles.ui.BattleSetupViewer;
+import pl.khuzzuk.messaging.Bus;
 
 public class Battles extends Application {
-    //public static final Bus BUS = Bus.initializeBus(false);
+    public static final Bus BUS = Bus.initializeBus(false);
     public static void main(String[] args) {
+        ObjectContainer.putBeans();
         launch(args);
     }
 
@@ -23,26 +24,29 @@ public class Battles extends Application {
         stage.setScene(new Scene(root));
         stage.show();
         BattleSetupViewer battleSetupViewer = BattleSetupViewer.get((int) stage.getScene().getWidth(), (int) stage.getScene().getHeight());
-        CardStyle romeStyle = CardStyle.builder().backgroundPath("file:cards/rome-back.png").build();
-        battleSetupViewer.addCardToDeck(getCard(romeStyle, "Card 001"));
-        battleSetupViewer.addCardToDeck(getCard(romeStyle, "Card 002"));
-        battleSetupViewer.addCardToDeck(getCard(romeStyle, "Card 003"));
-        battleSetupViewer.addCardToDeck(getCard(romeStyle, "Card 004"));
-        battleSetupViewer.addCardToDeck(getCard(romeStyle, "Card 005"));
-        battleSetupViewer.addCardToDeck(getCard(romeStyle, "Card 006"));
-        battleSetupViewer.addCardToDeck(getCard(romeStyle, "Card 007"));
-        battleSetupViewer.addCardToDeck(getCard(romeStyle, "Card 008"));
-        battleSetupViewer.showDeck();
+        String cardRepoTopic = "getCardRepoForInitialAppSetup";
+        BUS.<CardRepository>setGuiReaction(cardRepoTopic, cardRepository -> {
+            battleSetupViewer.addCardToDeck(cardRepository.getCard(CardRepository.AUX_P_CORNUTI));
+            battleSetupViewer.addCardToDeck(cardRepository.getCard(CardRepository.COMITATENSES_V_MACEDONIA));
+            battleSetupViewer.addCardToDeck(cardRepository.getCard(CardRepository.COMITATENSES_V_MACEDONIA));
+            battleSetupViewer.addCardToDeck(cardRepository.getCard(CardRepository.COMITATENSES_V_MACEDONIA));
+            battleSetupViewer.addCardToDeck(cardRepository.getCard(CardRepository.COMITATENSES_V_MACEDONIA));
+            battleSetupViewer.addCardToDeck(cardRepository.getCard(CardRepository.COMITATENSES_V_MACEDONIA));
+            battleSetupViewer.addCardToDeck(cardRepository.getCard(CardRepository.CATAPHRACTARII));
+            battleSetupViewer.addCardToDeck(cardRepository.getCard(CardRepository.EQUITES_DALMATAE));
+            battleSetupViewer.addCardToDeck(cardRepository.getCard(CardRepository.AUX_PALATINA));
+            battleSetupViewer.addCardToDeck(cardRepository.getCard(CardRepository.AUX_PALATINA));
+            battleSetupViewer.addCardToDeck(cardRepository.getCard(CardRepository.AUX_PALATINA));
+            battleSetupViewer.addCardToDeck(cardRepository.getCard(CardRepository.AUX_PALATINA));
+            battleSetupViewer.addCardToDeck(cardRepository.getCard(CardRepository.AUX_PALATINA));
+            battleSetupViewer.addCardToDeck(cardRepository.getCard(CardRepository.AUX_PALATINA));
+            battleSetupViewer.addCardToDeck(cardRepository.getCard(CardRepository.COMITES_CLIBANARII));
+            battleSetupViewer.addCardToDeck(cardRepository.getCard(CardRepository.EQUITES_SAGITARII));
+            battleSetupViewer.addCardToDeck(cardRepository.getCard(CardRepository.CLIBANARII_PARTHII));
+            battleSetupViewer.addCardToDeck(cardRepository.getCard(CardRepository.CLIBANARII));
+            battleSetupViewer.showDeck();
+        });
+        BUS.sendCommunicate(Container.GET_CARD_REPO, cardRepoTopic);
         root.getChildren().add(battleSetupViewer);
-    }
-
-    private Card getCard(CardStyle style, String name) {
-        return Card.builder()
-                .name(name)
-                .defence(3)
-                .speed(Speed.SLOW)
-                .strength(3)
-                .cost(6)
-                .style(style).build();
     }
 }

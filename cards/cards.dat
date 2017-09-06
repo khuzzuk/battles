@@ -1,0 +1,11 @@
+#name,strength,defense,speed,reach,morale,cost,equipment,style
+Com. V Maced.;3;5;SLOW;SHORT;3;6;;rome
+Aux.P.Cornuti;2;5;SLOW;SHORT;2;5;;rome
+Auxilia Palatina;2;4;SLOW;SHORT;2;3;;rome
+Auxilia Palatina sen.;2;5;SLOW;SHORT;2;5;;rome
+Cataphractarii;3;5;MEDIUM;SHORT_RANGE_MISSILE;4;8;;rome
+Clibanarii;3;7;MEDIUM;SHORT_RANGE_MISSILE;5;12;;rome
+Clibanarii Parthii;4;8;MEDIUM;MISSILE;6;17;;rome
+Comites Clibanarii;5;8;MEDIUM;MISSILE;6;20;;rome
+Equites Dalmatae;3;5;MEDIUM;SHORT;3;6;;rome
+Equites Sagitarii;1;3;FAST;MISSILE;2;4;;rome

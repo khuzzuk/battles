@@ -55,4 +55,8 @@ class DeckViewer extends AnchorPane implements Focusable {
             getChildren().add(deck.get(i));
         }
     }
+
+    int size() {
+        return deck.size();
+    }
 }
