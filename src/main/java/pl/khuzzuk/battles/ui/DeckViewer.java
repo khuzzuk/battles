@@ -18,6 +18,7 @@ class DeckViewer extends AnchorPane implements Focusable {
         viewer.setMaxHeight(windowHeight);
         viewer.frameSize = (int) (viewer.getWidth() / 10);
         viewer.deck = new ArrayList<>();
+        viewer.setOnMouseExited(event -> viewer.deck.forEach(CardViewer::toBack));
         return viewer;
     }
 
@@ -51,9 +52,14 @@ class DeckViewer extends AnchorPane implements Focusable {
         for (int i = 0; i < deck.size(); i++) {
             AnchorPane.setLeftAnchor(deck.get(i), (double) (space * i + frameSize));
             AnchorPane.setTopAnchor(deck.get(i), 0d);
-            setFocusAnimation(deck.get(i));
+            setFocusAnimation(deck.get(i), this::addOnTop);
             getChildren().add(deck.get(i));
         }
+    }
+
+    private void addOnTop(CardViewer viewer) {
+        deck.forEach(CardViewer::toBack);
+        viewer.toFront();
     }
 
     int size() {

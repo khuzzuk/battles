@@ -5,38 +5,27 @@ import javafx.scene.Node;
 import javafx.util.Duration;
 
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Consumer;
 
 public interface Focusable {
-    default void setFocusAnimation(Node node) {
-        AtomicBoolean animating = new AtomicBoolean(false);
+    default <T extends Node> void setFocusAnimation(T node, Consumer<T> whenFocus) {
         ScaleTransition focusTransition = new ScaleTransition(Duration.millis(100), node);
-        focusTransition.setByX(.2);
-        focusTransition.setByY(.2);
-        focusTransition.setOnFinished(e -> animating.set(false));
+        focusTransition.setToX(1.2);
+        focusTransition.setToY(1.2);
 
         ScaleTransition focusLostTransition = new ScaleTransition(Duration.millis(100), node);
-        focusLostTransition.setByX(-.2);
-        focusLostTransition.setByY(-.2);
-        focusLostTransition.setOnFinished(e -> animating.set(false));
+        focusLostTransition.setToX(1);
+        focusLostTransition.setToY(1);
 
-        AtomicBoolean enlarged = new AtomicBoolean(false);
         node.setOnMouseEntered(Optional.ofNullable(node.getOnMouseEntered())
                 .orElseGet(() -> event -> {
-            if (!enlarged.get() && !animating.get()) {
-                animating.set(true);
-                focusTransition.play();
-                enlarged.set(true);
-            }
-        }));
+                    whenFocus.accept(node);
+                    focusTransition.play();
+                }));
         node.setOnMouseExited(Optional.ofNullable(node.getOnMouseExited())
                 .orElseGet(() -> event -> {
-            if (enlarged.get() && !animating.get()) {
-                animating.set(true);
-                focusLostTransition.play();
-                enlarged.set(false);
-            }
-        }));
+                    focusLostTransition.play();
+                }));
     }
 
     default void removeFocusAnimation(Node node) {

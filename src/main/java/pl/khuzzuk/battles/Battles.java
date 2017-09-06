@@ -19,6 +19,7 @@ public class Battles extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         stage.setTitle("Battles");
+        stage.setOnCloseRequest(event -> BUS.closeBus());
         stage.setMaximized(true);
         Group root = new Group();
         stage.setScene(new Scene(root));
