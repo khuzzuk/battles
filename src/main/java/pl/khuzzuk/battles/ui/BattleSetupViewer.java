@@ -6,7 +6,11 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Rectangle;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import pl.khuzzuk.battles.EventTypes.Stages;
 import pl.khuzzuk.battles.cards.Card;
+import pl.khuzzuk.battles.decks.BattleSetup;
+
+import static pl.khuzzuk.battles.Battles.BUS;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class BattleSetupViewer extends AnchorPane {
@@ -32,6 +36,7 @@ public class BattleSetupViewer extends AnchorPane {
         startButton.setDisable(true);
         AnchorPane.setTopAnchor(startButton, 10d);
         AnchorPane.setLeftAnchor(startButton, 10d);
+        startButton.setOnAction(event -> toBattleStage());
         getChildren().add(startButton);
     }
 
@@ -96,5 +101,13 @@ public class BattleSetupViewer extends AnchorPane {
         int cardsOnTable = battleDeck.size();
         int cardsInPlay = cardsOnHand + cardsOnTable;
         return cardsInPlay / 2 > cardsOnHand && battleDeck.isFormationReady();
+    }
+
+    private void toBattleStage() {
+        BUS.send(Stages.FORMATION_READY, BattleSetup.get(
+                deck.getCardsFromDeck(),
+                battleDeck.getLeftDeck(),
+                battleDeck.getCenterDeck(),
+                battleDeck.getRightDeck()));
     }
 }

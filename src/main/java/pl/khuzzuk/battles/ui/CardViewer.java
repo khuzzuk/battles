@@ -5,6 +5,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import pl.khuzzuk.battles.cards.Card;
 
@@ -14,6 +15,7 @@ import java.util.Map;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 class CardViewer extends AnchorPane implements Decorative {
     private static final Map<String, Image> cacheOfImages = new HashMap<>();
+    @Getter(AccessLevel.PACKAGE)
     private final Card card;
 
     static CardViewer instance(Card card, int areaHeight) {

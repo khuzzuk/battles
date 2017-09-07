@@ -5,8 +5,10 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import pl.khuzzuk.battles.EventTypes.Container;
+import pl.khuzzuk.battles.EventTypes.Stages;
 import pl.khuzzuk.battles.cards.CardRepository;
 import pl.khuzzuk.battles.ui.BattleSetupViewer;
+import pl.khuzzuk.battles.ui.BattleView;
 import pl.khuzzuk.messaging.Bus;
 
 public class Battles extends Application {
@@ -48,6 +50,10 @@ public class Battles extends Application {
             battleSetupViewer.showDeck();
         });
         BUS.sendCommunicate(Container.GET_CARD_REPO, cardRepoTopic);
+        BUS.setGuiReaction(Stages.FORMATION_READY, () -> {
+            root.getChildren().clear();
+            root.getChildren().add(BattleView.get());
+        });
         root.getChildren().add(battleSetupViewer);
     }
 }

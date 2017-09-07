@@ -7,6 +7,7 @@ import pl.khuzzuk.battles.cards.Card;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 class DeckViewer extends AnchorPane implements Focusable {
@@ -64,5 +65,9 @@ class DeckViewer extends AnchorPane implements Focusable {
 
     int size() {
         return deck.size();
+    }
+
+    List<Card> getCardsFromDeck() {
+        return deck.stream().map(CardViewer::getCard).collect(Collectors.toList());
     }
 }

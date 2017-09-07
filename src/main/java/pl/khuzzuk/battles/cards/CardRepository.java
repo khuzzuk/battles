@@ -9,6 +9,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -65,5 +67,9 @@ public class CardRepository {
 
     public Card getCard(String name) {
         return cards.computeIfAbsent(name, key -> Card.builder().name(key).build());
+    }
+
+    public List<Card> getAllCards() {
+        return new ArrayList<>(cards.values());
     }
 }

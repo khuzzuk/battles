@@ -4,6 +4,9 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Rectangle;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import pl.khuzzuk.battles.cards.Card;
+
+import java.util.List;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 class BattleDecks extends AnchorPane {
@@ -73,5 +76,17 @@ class BattleDecks extends AnchorPane {
 
     boolean isFormationReady() {
         return leftDeck.size() > 0 && centerDeck.size() > 0 && rightDeck.size() > 0;
+    }
+
+    List<Card> getLeftDeck() {
+        return leftDeck.getCardsFromDeck();
+    }
+
+    List<Card> getCenterDeck() {
+        return centerDeck.getCardsFromDeck();
+    }
+
+    List<Card> getRightDeck() {
+        return rightDeck.getCardsFromDeck();
     }
 }
