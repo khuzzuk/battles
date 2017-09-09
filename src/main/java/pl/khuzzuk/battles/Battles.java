@@ -26,7 +26,9 @@ public class Battles extends Application {
         Group root = new Group();
         stage.setScene(new Scene(root));
         stage.show();
-        BattleSetupViewer battleSetupViewer = BattleSetupViewer.get((int) stage.getScene().getWidth(), (int) stage.getScene().getHeight());
+        int width = (int) stage.getScene().getWidth();
+        int height = (int) stage.getScene().getHeight();
+        BattleSetupViewer battleSetupViewer = BattleSetupViewer.get(width, height);
         String cardRepoTopic = "getCardRepoForInitialAppSetup";
         BUS.<CardRepository>setGuiReaction(cardRepoTopic, cardRepository -> {
             battleSetupViewer.addCardToDeck(cardRepository.getCard(CardRepository.AUX_P_CORNUTI));
@@ -50,9 +52,10 @@ public class Battles extends Application {
             battleSetupViewer.showDeck();
         });
         BUS.sendCommunicate(Container.GET_CARD_REPO, cardRepoTopic);
-        BUS.setGuiReaction(Stages.FORMATION_READY, () -> {
+        BUS.setGuiReaction(Stages.FORMATION_READY, battleSetup -> {
             root.getChildren().clear();
-            root.getChildren().add(BattleView.get());
+            root.getChildren().add(BattleView.get(width, height));
+            BUS.send(Stages.BATTLE_TABLE_READY, battleSetup);
         });
         root.getChildren().add(battleSetupViewer);
     }

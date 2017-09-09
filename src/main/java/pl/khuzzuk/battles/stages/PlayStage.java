@@ -1,7 +1,9 @@
 package pl.khuzzuk.battles.stages;
 
 import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import pl.khuzzuk.battles.EventTypes.Container;
 import pl.khuzzuk.battles.EventTypes.Stages;
 import pl.khuzzuk.battles.cards.Card;
 import pl.khuzzuk.battles.cards.CardRepository;
@@ -13,12 +15,16 @@ import java.util.Random;
 
 import static pl.khuzzuk.battles.Battles.BUS;
 
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class PlayStage {
-    private final CardRepository cardRepository;
-    public static PlayStage get(CardRepository cardRepository) {
-        PlayStage stage = new PlayStage(cardRepository);
-        BUS.setReaction(Stages.FORMATION_READY, stage::startBattle);
+    @Setter(AccessLevel.PRIVATE)
+    private CardRepository cardRepository;
+    public static PlayStage get() {
+        PlayStage stage = new PlayStage();
+        String setCardRepo = "setCardRepoInPlayStage";
+        BUS.setReaction(setCardRepo, stage::setCardRepository);
+        BUS.setReaction(Stages.BATTLE_TABLE_READY, stage::startBattle);
+        BUS.sendCommunicate(Container.GET_CARD_REPO, setCardRepo);
         return stage;
     }
 
@@ -37,10 +43,10 @@ public class PlayStage {
     }
 
     private List<Card> fillRandomly(List<Card> cards, int size) {
-        Random random = new Random(cards.size() - 1);
+        Random random = new Random();
         List<Card> backCards = new ArrayList<>();
         for (int i = 0; i < size; i++) {
-            backCards.add(cards.get(random.nextInt()));
+            backCards.add(cards.get(random.nextInt(cards.size())));
         }
         return backCards;
     }

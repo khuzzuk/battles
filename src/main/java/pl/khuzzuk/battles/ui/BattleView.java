@@ -1,5 +1,6 @@
 package pl.khuzzuk.battles.ui;
 
+import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -12,19 +13,61 @@ import static pl.khuzzuk.battles.Battles.BUS;
 public class BattleView extends AnchorPane {
     private BattleSetup playerSetup;
     private BattleSetup opponentSetup;
+    private Button nextRoundButton;
+    private MenuManager menuManager;
+    private double deckHeight;
+    private BattleDecks playerBattleDecks;
+    private BattleDecks opponentBattleDecks;
+    private DeckViewer playersBack;
 
-    public static BattleView get() {
+    public static BattleView get(int width, int height) {
         BattleView battleView = new BattleView();
-        BUS.setReaction(Stages.BATTLE_START_PLAYER, battleView::setPlayerSetup);
-        BUS.setReaction(Stages.BATTLE_START_OPPONENT, battleView::setOpponentSetup);
+        battleView.setWidth(width);
+        battleView.setMinWidth(width);
+        battleView.setHeight(height);
+        battleView.menuManager = MenuManager.get();
+        battleView.deckHeight = (height - battleView.menuManager.menuHeight) / 3;
+        BUS.setGuiReaction(Stages.BATTLE_START_PLAYER, battleView::setPlayerSetup);
+        BUS.setGuiReaction(Stages.BATTLE_START_OPPONENT, battleView::setOpponentSetup);
+        battleView.setupMenu();
         return battleView;
     }
 
-    private void setPlayerSetup(BattleSetup playerSetup) {
+    private void setupMenu() {
+        nextRoundButton = menuManager.addButton("Next round", true, getChildren());
+    }
 
+    private void setPlayerSetup(BattleSetup playerSetup) {
+        this.playerSetup = playerSetup;
+        playerBattleDecks = BattleDecks.get(getWidth(), deckHeight);
+        fillBattleDecksViewer(playerBattleDecks, playerSetup);
+        AnchorPane.setLeftAnchor(playerBattleDecks, 0d);
+        AnchorPane.setTopAnchor(playerBattleDecks, menuManager.menuHeight + deckHeight);
+        playerBattleDecks.repaintDecks();
+
+        playersBack = DeckViewer.getInstance((int) getWidth(), (int) deckHeight);
+        playerSetup.getBack().forEach(playersBack::addCard);
+        playersBack.repaintDeck();
+        AnchorPane.setLeftAnchor(playersBack, 0d);
+        AnchorPane.setTopAnchor(playersBack, menuManager.menuHeight + deckHeight * 2);
+
+        getChildren().addAll(playerBattleDecks, playersBack);
     }
 
     private void setOpponentSetup(BattleSetup opponentSetup) {
+        this.opponentSetup = opponentSetup;
+        opponentBattleDecks = BattleDecks.get(getWidth(), deckHeight);
+        fillBattleDecksViewer(opponentBattleDecks, opponentSetup);
+        AnchorPane.setLeftAnchor(opponentBattleDecks, 0d);
+        AnchorPane.setTopAnchor(opponentBattleDecks, (double) menuManager.menuHeight);
+        opponentBattleDecks.repaintDecks();
+        getChildren().add(opponentBattleDecks);
+        opponentBattleDecks.toBack();
+    }
 
+    private void fillBattleDecksViewer(BattleDecks decks, BattleSetup setup) {
+        setup.getLeft().forEach(decks::addToLeft);
+        setup.getCenter().forEach(decks::addToCenter);
+        setup.getRight().forEach(decks::addToRight);
     }
 }

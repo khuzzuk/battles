@@ -16,15 +16,16 @@ import static pl.khuzzuk.battles.Battles.BUS;
 public class BattleSetupViewer extends AnchorPane {
     private DeckViewer deck;
     private BattleDecks battleDeck;
-    private static final int menuHeight = 100;
     private double deckHeight;
     private Button startButton;
+    private MenuManager menuManager;
 
     public static BattleSetupViewer get(int width, int height) {
         BattleSetupViewer viewer = new BattleSetupViewer();
         viewer.setWidth(width);
         viewer.setHeight(height);
-        viewer.deckHeight = (height - menuHeight) / 2;
+        viewer.menuManager = MenuManager.get();
+        viewer.deckHeight = (height - viewer.menuManager.menuHeight) / 2;
         viewer.setupMenu();
         viewer.setupPlayerTable();
         viewer.setupDeckViewer();
@@ -32,18 +33,14 @@ public class BattleSetupViewer extends AnchorPane {
     }
 
     private void setupMenu() {
-        startButton = new Button("Start battle");
-        startButton.setDisable(true);
-        AnchorPane.setTopAnchor(startButton, 10d);
-        AnchorPane.setLeftAnchor(startButton, 10d);
+        startButton = menuManager.addButton("Start battle", true, getChildren());
         startButton.setOnAction(event -> toBattleStage());
-        getChildren().add(startButton);
     }
 
     private void setupDeckViewer() {
         Rectangle deckArea = new Rectangle(getWidth(), deckHeight);
         deck = DeckViewer.getInstance((int) getWidth(), (int) deckHeight);
-        double topAnchor = deckHeight + menuHeight;
+        double topAnchor = deckHeight + menuManager.menuHeight;
         AnchorPane.setTopAnchor(deckArea, topAnchor);
         AnchorPane.setLeftAnchor(deckArea, 0d);
         AnchorPane.setTopAnchor(deck, topAnchor);
@@ -53,7 +50,7 @@ public class BattleSetupViewer extends AnchorPane {
 
     private void setupPlayerTable() {
         battleDeck = BattleDecks.get(getWidth(), deckHeight);
-        AnchorPane.setTopAnchor(battleDeck, (double) menuHeight);
+        AnchorPane.setTopAnchor(battleDeck, (double) menuManager.menuHeight);
         AnchorPane.setLeftAnchor(battleDeck, 0d);
         getChildren().addAll(battleDeck);
     }
@@ -100,7 +97,10 @@ public class BattleSetupViewer extends AnchorPane {
         int cardsOnHand = deck.size();
         int cardsOnTable = battleDeck.size();
         int cardsInPlay = cardsOnHand + cardsOnTable;
-        return cardsInPlay / 2 > cardsOnHand && battleDeck.isFormationReady();
+        return cardsInPlay / 2 > cardsOnHand
+                && battleDeck.getLeftDeck().size() > 0
+                && battleDeck.getCenterDeck().size() > 0
+                && battleDeck.getRightDeck().size() > 0;
     }
 
     private void toBattleStage() {

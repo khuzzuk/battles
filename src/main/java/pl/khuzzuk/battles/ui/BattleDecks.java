@@ -58,6 +58,18 @@ class BattleDecks extends AnchorPane {
         }
     }
 
+    void addToLeft(Card card) {
+        leftDeck.addCard(card);
+    }
+
+    void addToCenter(Card card) {
+        centerDeck.addCard(card);
+    }
+
+    void addToRight(Card card) {
+        rightDeck.addCard(card);
+    }
+
     void removeCard(CardViewer cardViewer) {
         leftDeck.removeCard(cardViewer);
         centerDeck.removeCard(cardViewer);
@@ -72,10 +84,6 @@ class BattleDecks extends AnchorPane {
 
     int size() {
         return leftDeck.size() + centerDeck.size() + rightDeck.size();
-    }
-
-    boolean isFormationReady() {
-        return leftDeck.size() > 0 && centerDeck.size() > 0 && rightDeck.size() > 0;
     }
 
     List<Card> getLeftDeck() {
