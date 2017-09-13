@@ -2,6 +2,7 @@ package pl.khuzzuk.battles.ui;
 
 import javafx.scene.layout.AnchorPane;
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import pl.khuzzuk.battles.cards.Card;
 
@@ -9,18 +10,24 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-class DeckViewer extends AnchorPane implements Focusable {
+@NoArgsConstructor(access = AccessLevel.PACKAGE)
+class DeckViewer extends AnchorPane {
+    @Getter(AccessLevel.PACKAGE)
     private List<CardViewer> deck;
+    @Getter(AccessLevel.PACKAGE)
     private int frameSize;
-    static DeckViewer getInstance(int windowWidth, int windowHeight) {
+    static DeckViewer get(int windowWidth, int windowHeight) {
         DeckViewer viewer = new DeckViewer();
-        viewer.setMaxWidth(windowWidth * 0.9);
-        viewer.setMaxHeight(windowHeight);
-        viewer.frameSize = (int) (viewer.getWidth() / 10);
-        viewer.deck = new ArrayList<>();
-        viewer.setOnMouseExited(event -> viewer.deck.forEach(CardViewer::toBack));
+        viewer.setInitialValues(windowWidth, windowHeight);
         return viewer;
+    }
+
+    void setInitialValues(double width, double height) {
+        setMaxWidth(width * 0.9);
+        setMaxHeight(height);
+        frameSize = (int) (getWidth() / 10);
+        deck = new ArrayList<>();
+        setOnMouseExited(event -> deck.forEach(CardViewer::toBack));
     }
 
     void addCard(CardViewer cardViewer, double x) {
@@ -39,6 +46,7 @@ class DeckViewer extends AnchorPane implements Focusable {
     CardViewer addCard(Card card) {
         CardViewer viewer = CardViewer.instance(card, (int) getMaxHeight());
         deck.add(viewer);
+        viewer.setFocusToMouseMovement(this::addOnTop, 1.25);
         return viewer;
     }
 
@@ -51,14 +59,14 @@ class DeckViewer extends AnchorPane implements Focusable {
         getChildren().clear();
         int space = (int) (getMaxWidth() / deck.size() - frameSize);
         for (int i = 0; i < deck.size(); i++) {
-            AnchorPane.setLeftAnchor(deck.get(i), (double) (space * i + frameSize));
-            AnchorPane.setTopAnchor(deck.get(i), 0d);
-            setFocusAnimation(deck.get(i), this::addOnTop);
-            getChildren().add(deck.get(i));
+            CardViewer cardViewer = deck.get(i);
+            AnchorPane.setLeftAnchor(cardViewer, (double) (space * i + frameSize));
+            AnchorPane.setTopAnchor(cardViewer, 0d);
+            getChildren().add(cardViewer);
         }
     }
 
-    private void addOnTop(CardViewer viewer) {
+    void addOnTop(CardViewer viewer) {
         deck.forEach(CardViewer::toBack);
         viewer.toFront();
     }

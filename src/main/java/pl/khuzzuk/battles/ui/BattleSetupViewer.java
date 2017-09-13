@@ -39,7 +39,7 @@ public class BattleSetupViewer extends AnchorPane {
 
     private void setupDeckViewer() {
         Rectangle deckArea = new Rectangle(getWidth(), deckHeight);
-        deck = DeckViewer.getInstance((int) getWidth(), (int) deckHeight);
+        deck = DeckViewer.get((int) getWidth(), (int) deckHeight);
         double topAnchor = deckHeight + menuManager.menuHeight;
         AnchorPane.setTopAnchor(deckArea, topAnchor);
         AnchorPane.setLeftAnchor(deckArea, 0d);

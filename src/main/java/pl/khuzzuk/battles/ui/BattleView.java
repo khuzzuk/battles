@@ -45,7 +45,7 @@ public class BattleView extends AnchorPane {
         AnchorPane.setTopAnchor(playerBattleDecks, menuManager.menuHeight + deckHeight);
         playerBattleDecks.repaintDecks();
 
-        playersBack = DeckViewer.getInstance((int) getWidth(), (int) deckHeight);
+        playersBack = DeckViewer.get((int) getWidth(), (int) deckHeight);
         playerSetup.getBack().forEach(playersBack::addCard);
         playersBack.repaintDeck();
         AnchorPane.setLeftAnchor(playersBack, 0d);

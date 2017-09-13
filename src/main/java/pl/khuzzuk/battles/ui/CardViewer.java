@@ -7,16 +7,22 @@ import javafx.scene.shape.Rectangle;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import pl.khuzzuk.battles.cards.Card;
 
 import java.util.HashMap;
 import java.util.Map;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-class CardViewer extends AnchorPane implements Decorative {
+class CardViewer extends AnchorPane implements Decorative, Focusable<CardViewer>, Selectable<CardViewer> {
     private static final Map<String, Image> cacheOfImages = new HashMap<>();
     @Getter(AccessLevel.PACKAGE)
     private final Card card;
+    @Getter
+    @Setter
+    private boolean selected;
+    @Getter
+    private Rectangle backRecktangle;
 
     static CardViewer instance(Card card, int areaHeight) {
         CardViewer viewer = new CardViewer(card);
@@ -25,12 +31,12 @@ class CardViewer extends AnchorPane implements Decorative {
     }
 
     private void prepareFrame(Image backgroundImage, int size) {
-        Rectangle background = new Rectangle(size * 10, size * 16);
-        background.setArcWidth(size);
-        background.setArcHeight(size);
-        setBackground(backgroundImage, background);
-        background.setStrokeWidth(1d);
-        background.setStroke(Color.BLACK);
+        backRecktangle = new Rectangle(size * 10, size * 16);
+        backRecktangle.setArcWidth(size);
+        backRecktangle.setArcHeight(size);
+        setBackground(backgroundImage, backRecktangle);
+        backRecktangle.setStrokeWidth(1d);
+        backRecktangle.setStroke(Color.BLACK);
 
         CardContentFrame frame = CardContentFrame.get(card, backgroundImage, size);
         AnchorPane.setTopAnchor(frame, size * 3d);
@@ -44,6 +50,11 @@ class CardViewer extends AnchorPane implements Decorative {
         AnchorPane.setLeftAnchor(header, 10d + size / 2);
         AnchorPane.setRightAnchor(header, 10d + size / 2);
 
-        getChildren().addAll(background, frame, header);
+        getChildren().addAll(backRecktangle, frame, header);
+    }
+
+    @Override
+    public CardViewer getElement() {
+        return this;
     }
 }

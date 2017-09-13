@@ -1,5 +1,6 @@
 package pl.khuzzuk.battles.ui;
 
+import javafx.scene.Node;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Rectangle;
 import lombok.AccessLevel;
@@ -22,6 +23,14 @@ class BattleDecks extends AnchorPane {
         return decks;
     }
 
+    static BattleDecks getSelectable(double width, double height) {
+        BattleDecks battleDecks = new BattleDecks();
+        battleDecks.setWidth(width);
+        battleDecks.setHeight(height);
+        battleDecks.setupSelectableDecks();
+        return battleDecks;
+    }
+
     private void setupDecks() {
         leftDeck = getDeckViewer(0);
         centerDeck = getDeckViewer(1);
@@ -30,18 +39,36 @@ class BattleDecks extends AnchorPane {
                 leftDeck, centerDeck, rightDeck);
     }
 
+    private void setupSelectableDecks() {
+        leftDeck = getSelectableDeckViewer(0);
+        centerDeck = getSelectableDeckViewer(1);
+        rightDeck = getSelectableDeckViewer(2);
+        getChildren().addAll(getRectangle(0), getRectangle(1), getRectangle(2),
+                leftDeck, centerDeck, rightDeck);
+    }
+
     private Rectangle getRectangle(int fromLeft) {
         Rectangle rectangle = new Rectangle(getWidth() / 3, getHeight());
-        AnchorPane.setLeftAnchor(rectangle, getWidth() / 3 * fromLeft);
-        AnchorPane.setTopAnchor(rectangle, 0d);
+        setAnchorPane(rectangle, fromLeft);
         return rectangle;
     }
 
     private DeckViewer getDeckViewer(int fromLeft) {
-        DeckViewer deckViewer = DeckViewer.getInstance((int) getWidth() / 3, (int) getHeight());
-        AnchorPane.setLeftAnchor(deckViewer, getWidth() / 3 * fromLeft);
-        AnchorPane.setTopAnchor(deckViewer, 0d);
+        DeckViewer deckViewer = DeckViewer.get((int) getWidth() / 3, (int) getHeight());
+        setAnchorPane(deckViewer, fromLeft);
         return deckViewer;
+    }
+
+    private SelectableDeckViewer getSelectableDeckViewer(int fromLeft) {
+        SelectableDeckViewer deckViewer = SelectableDeckViewer.get(getWidth() / 3, getHeight(), getWidth(),
+                (getWidth() / 2) - (getWidth() / 6 + getWidth() / 2 * fromLeft));
+        setAnchorPane(deckViewer, fromLeft);
+        return deckViewer;
+    }
+
+    private void setAnchorPane(Node node, int fromLeft) {
+        AnchorPane.setLeftAnchor(node, getWidth() / 3 * fromLeft);
+        AnchorPane.setTopAnchor(node, 0d);
     }
 
     void drop(CardViewer cardViewer, double x) {
