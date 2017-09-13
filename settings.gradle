@@ -1,2 +1,3 @@
 rootProject.name = 'battles'
 
+systemProp.sonar.host.url=http://localhost:9000

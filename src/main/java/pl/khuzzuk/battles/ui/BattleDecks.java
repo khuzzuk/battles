@@ -60,8 +60,7 @@ class BattleDecks extends AnchorPane {
     }
 
     private SelectableDeckViewer getSelectableDeckViewer(int fromLeft) {
-        SelectableDeckViewer deckViewer = SelectableDeckViewer.get(getWidth() / 3, getHeight(), getWidth(),
-                (getWidth() / 2) - (getWidth() / 6 + getWidth() / 2 * fromLeft));
+        SelectableDeckViewer deckViewer = SelectableDeckViewer.get(getWidth() / 3, getHeight());
         setAnchorPane(deckViewer, fromLeft);
         return deckViewer;
     }

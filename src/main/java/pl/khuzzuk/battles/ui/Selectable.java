@@ -7,29 +7,39 @@ import javafx.scene.shape.Shape;
 
 import java.util.function.Consumer;
 
-public interface Selectable<T extends Pane> {
-    default void addSelectionEffect(Shape background,
-                                    Consumer<? super Selectable<T>> whenSelected,
-                                    Consumer<? super Selectable<T>> whenUnselected) {
-        Pane node = getElement();
+public interface Selectable<T extends Pane, U extends Shape> extends Element<T> {
+    default void addSelectionEffect(Consumer<? super Selectable<T, U>> whenSelected,
+                                    Consumer<? super Selectable<T, U>> whenUnselected) {
+        T node = getElement();
+        U background = getBackElement();
         Paint baseStroke = background.getStroke();
         background.setStrokeWidth(2);
         node.setOnMouseClicked(event -> {
             if (isSelected()) {
-                setSelected(false);
-                background.setStroke(baseStroke);
+                deselect();
                 whenSelected.accept(this);
             } else {
-                setSelected(true);
-                background.setStroke(Color.WHITE);
+                select();
                 whenUnselected.accept(this);
             }
         });
     }
 
-    T getElement();
+    U getBackElement();
+
+    Paint getBaseStroke();
 
     boolean isSelected();
 
     void setSelected(boolean isSelected);
+
+    default void deselect() {
+        getBackElement().setStroke(getBaseStroke());
+        setSelected(false);
+    }
+
+    default void select() {
+        getBackElement().setStroke(Color.WHITE);
+        setSelected(true);
+    }
 }

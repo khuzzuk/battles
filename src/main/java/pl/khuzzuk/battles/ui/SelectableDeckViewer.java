@@ -7,7 +7,7 @@ class SelectableDeckViewer extends DeckViewer {
         super();
     }
 
-    static SelectableDeckViewer get(double width, double height, double focusedWidth, double centeringVectorX) {
+    static SelectableDeckViewer get(double width, double height) {
         SelectableDeckViewer deckViewer = new SelectableDeckViewer();
         deckViewer.setInitialValues(width, height);
         return deckViewer;
@@ -17,19 +17,15 @@ class SelectableDeckViewer extends DeckViewer {
     CardViewer addCard(Card card) {
         CardViewer viewer = CardViewer.instance(card, (int) getMaxHeight());
         getDeck().add(viewer);
-        viewer.addSelectionEffect(viewer.getBackRecktangle(), this::markSelected, this::deselect);
+        viewer.addSelectionEffect(this::markSelected, this::deselect);
         return viewer;
     }
 
-    private void markSelected(Selectable<CardViewer> cardViewer) {
-
+    private void markSelected(Selectable<CardViewer, ?> cardViewer) {
+        addOnTop(cardViewer.getElement());
     }
 
-    private void deselect(Selectable<CardViewer> cardViewer) {
-
-    }
-
-    private void startResolvingDamageStage() {
+    private void deselect(Selectable<CardViewer, ?> cardViewer) {
 
     }
 }

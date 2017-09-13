@@ -7,9 +7,7 @@ import javafx.util.Duration;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-public interface Focusable<T extends Node> {
-    T getElement();
-
+public interface Focusable<T extends Node> extends Element<T> {
     default void setFocusToMouseMovement(Consumer<T> whenFocus, double scale) {
         T node = getElement();
         ScaleTransition focusTransition = getFocusTransition(scale);
@@ -32,10 +30,5 @@ public interface Focusable<T extends Node> {
         focusTransition.setToX(scale);
         focusTransition.setToY(scale);
         return focusTransition;
-    }
-
-    default void removeFocusAnimation(Node node) {
-        node.setOnMouseEntered(null);
-        node.setOnMouseExited(null);
     }
 }

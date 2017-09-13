@@ -14,15 +14,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-class CardViewer extends AnchorPane implements Decorative, Focusable<CardViewer>, Selectable<CardViewer> {
+@Getter
+class CardViewer extends AnchorPane implements Decorative, Focusable<CardViewer>, Selectable<CardViewer, Rectangle> {
     private static final Map<String, Image> cacheOfImages = new HashMap<>();
-    @Getter(AccessLevel.PACKAGE)
     private final Card card;
-    @Getter
     @Setter
     private boolean selected;
-    @Getter
-    private Rectangle backRecktangle;
+    private Rectangle backElement;
+    private Color baseStroke;
 
     static CardViewer instance(Card card, int areaHeight) {
         CardViewer viewer = new CardViewer(card);
@@ -31,12 +30,13 @@ class CardViewer extends AnchorPane implements Decorative, Focusable<CardViewer>
     }
 
     private void prepareFrame(Image backgroundImage, int size) {
-        backRecktangle = new Rectangle(size * 10, size * 16);
-        backRecktangle.setArcWidth(size);
-        backRecktangle.setArcHeight(size);
-        setBackground(backgroundImage, backRecktangle);
-        backRecktangle.setStrokeWidth(1d);
-        backRecktangle.setStroke(Color.BLACK);
+        backElement = new Rectangle(size * 10, size * 16);
+        backElement.setArcWidth(size);
+        backElement.setArcHeight(size);
+        setBackground(backgroundImage, backElement);
+        backElement.setStrokeWidth(1d);
+        baseStroke = Color.BLACK;
+        backElement.setStroke(baseStroke);
 
         CardContentFrame frame = CardContentFrame.get(card, backgroundImage, size);
         AnchorPane.setTopAnchor(frame, size * 3d);
@@ -50,7 +50,7 @@ class CardViewer extends AnchorPane implements Decorative, Focusable<CardViewer>
         AnchorPane.setLeftAnchor(header, 10d + size / 2);
         AnchorPane.setRightAnchor(header, 10d + size / 2);
 
-        getChildren().addAll(backRecktangle, frame, header);
+        getChildren().addAll(backElement, frame, header);
     }
 
     @Override
