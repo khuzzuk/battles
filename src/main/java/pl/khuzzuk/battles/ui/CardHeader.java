@@ -27,16 +27,16 @@ public class CardHeader extends AnchorPane implements Decorative {
         AnchorPane.setLeftAnchor(inner, 5d);
 
         Label text = new Label(name);
-        text.setFont(Font.font(width / 10));
+        text.setFont(Font.font(width / 10d));
         HBox textContainer = new HBox(text);
         textContainer.setAlignment(Pos.CENTER);
-        textContainer.setPrefWidth(width - 10);
-        textContainer.setPrefHeight(height - 10);
+        textContainer.setPrefWidth(width - 10d);
+        textContainer.setPrefHeight(height - 10d);
         AnchorPane.setTopAnchor(textContainer, 5d);
         AnchorPane.setLeftAnchor(textContainer, 5d);
 
         header.setWidth(width);
-        header.setHeight(width / 4);
+        header.setHeight(width / 4d);
         header.getChildren().addAll(outer, inner, textContainer);
         return header;
     }

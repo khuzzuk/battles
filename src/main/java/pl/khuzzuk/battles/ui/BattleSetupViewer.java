@@ -25,7 +25,7 @@ public class BattleSetupViewer extends AnchorPane {
         viewer.setWidth(width);
         viewer.setHeight(height);
         viewer.menuManager = MenuManager.get();
-        viewer.deckHeight = (height - viewer.menuManager.menuHeight) / 2;
+        viewer.deckHeight = (height - viewer.menuManager.menuHeight) / 2d;
         viewer.setupMenu();
         viewer.setupPlayerTable();
         viewer.setupDeckViewer();

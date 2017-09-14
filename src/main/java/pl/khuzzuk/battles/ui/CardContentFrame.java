@@ -1,6 +1,5 @@
 package pl.khuzzuk.battles.ui;
 
-import javafx.animation.ScaleTransition;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
@@ -9,7 +8,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.shape.*;
 import javafx.scene.text.Font;
-import javafx.util.Duration;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import pl.khuzzuk.battles.cards.Card;
@@ -25,7 +23,7 @@ class CardContentFrame extends AnchorPane implements Hexagonal, Decorative {
 
     static CardContentFrame get(Card card, Image background, int hexSize) {
         CardContentFrame frame = new CardContentFrame(hexSize, background);
-        frame.frameScale = frame.R / 8;
+        frame.frameScale = frame.R / 8d;
         frame.iconsR = (int) (frame.R - frame.frameScale * 2);
         frame.setupShape();
         frame.addCardParams(card);
@@ -119,20 +117,20 @@ class CardContentFrame extends AnchorPane implements Hexagonal, Decorative {
         addInnerShadow(innerIcon);
 
         AnchorPane.setLeftAnchor(icon, x + frameScale * 2 - 1);
-        AnchorPane.setTopAnchor(icon, (R * 3 / 2 + 0.25) * row + frameScale * 2);
+        AnchorPane.setTopAnchor(icon, (R * 3d / 2 + 0.25) * row + frameScale * 2);
         AnchorPane.setLeftAnchor(innerIcon, x + frameScale * 3 - 1.5);
-        AnchorPane.setTopAnchor(innerIcon, (R * 3 / 2 + 0.25) * row + frameScale * 3);
+        AnchorPane.setTopAnchor(innerIcon, (R * 3d / 2 + 0.25) * row + frameScale * 3);
 
         HBox textBox = new HBox();
         Label text = new Label(content);
         text.setFont(Font.font(iconsR));
         textBox.getChildren().addAll(text);
         textBox.setAlignment(Pos.CENTER);
-        double boxSize = (iconsR) * 2;
+        double boxSize = iconsR * 2d;
         textBox.setMinHeight(boxSize);
         textBox.setMinWidth(boxSize);
         AnchorPane.setLeftAnchor(textBox, x + frameScale);
-        AnchorPane.setTopAnchor(textBox, (R * 3 / 2 + 0.25) * row + frameScale * 2);
+        AnchorPane.setTopAnchor(textBox, (R * 3d / 2 + 0.25) * row + frameScale * 2);
         getChildren().addAll(icon, innerIcon, textBox);
     }
 

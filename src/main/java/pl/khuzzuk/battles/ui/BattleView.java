@@ -11,14 +11,9 @@ import static pl.khuzzuk.battles.Battles.BUS;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class BattleView extends AnchorPane {
-    private BattleSetup playerSetup;
-    private BattleSetup opponentSetup;
     private Button nextRoundButton;
     private MenuManager menuManager;
     private double deckHeight;
-    private BattleDecks playerBattleDecks;
-    private BattleDecks opponentBattleDecks;
-    private DeckViewer playersBack;
 
     public static BattleView get(int width, int height) {
         BattleView battleView = new BattleView();
@@ -26,7 +21,7 @@ public class BattleView extends AnchorPane {
         battleView.setMinWidth(width);
         battleView.setHeight(height);
         battleView.menuManager = MenuManager.get();
-        battleView.deckHeight = (height - battleView.menuManager.menuHeight) / 3;
+        battleView.deckHeight = (height - battleView.menuManager.menuHeight) / 3d;
         BUS.setGuiReaction(Stages.BATTLE_START_PLAYER, battleView::setPlayerSetup);
         BUS.setGuiReaction(Stages.BATTLE_START_OPPONENT, battleView::setOpponentSetup);
         battleView.setupMenu();
@@ -38,14 +33,13 @@ public class BattleView extends AnchorPane {
     }
 
     private void setPlayerSetup(BattleSetup playerSetup) {
-        this.playerSetup = playerSetup;
-        playerBattleDecks = BattleDecks.get(getWidth(), deckHeight);
+        BattleDecks playerBattleDecks = BattleDecks.get(getWidth(), deckHeight);
         fillBattleDecksViewer(playerBattleDecks, playerSetup);
         AnchorPane.setLeftAnchor(playerBattleDecks, 0d);
         AnchorPane.setTopAnchor(playerBattleDecks, menuManager.menuHeight + deckHeight);
         playerBattleDecks.repaintDecks();
 
-        playersBack = DeckViewer.get((int) getWidth(), (int) deckHeight);
+        DeckViewer playersBack = DeckViewer.get((int) getWidth(), (int) deckHeight);
         playerSetup.getBack().forEach(playersBack::addCard);
         playersBack.repaintDeck();
         AnchorPane.setLeftAnchor(playersBack, 0d);
@@ -55,8 +49,7 @@ public class BattleView extends AnchorPane {
     }
 
     private void setOpponentSetup(BattleSetup opponentSetup) {
-        this.opponentSetup = opponentSetup;
-        opponentBattleDecks = BattleDecks.get(getWidth(), deckHeight);
+        BattleDecks opponentBattleDecks = BattleDecks.get(getWidth(), deckHeight);
         fillBattleDecksViewer(opponentBattleDecks, opponentSetup);
         AnchorPane.setLeftAnchor(opponentBattleDecks, 0d);
         AnchorPane.setTopAnchor(opponentBattleDecks, (double) menuManager.menuHeight);
