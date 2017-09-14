@@ -12,7 +12,7 @@ import pl.khuzzuk.battles.ui.BattleView;
 import pl.khuzzuk.messaging.Bus;
 
 public class Battles extends Application {
-    public static final Bus BUS = Bus.initializeBus(false);
+    public static final Bus BUS = Bus.initializeBus(true);
     public static void main(String[] args) {
         ObjectContainer.putBeans();
         launch(args);

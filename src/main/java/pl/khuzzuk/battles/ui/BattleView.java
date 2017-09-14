@@ -71,7 +71,6 @@ public class BattleView extends PositionablePane {
         leftDamageViewer = DamageViewer.get(
                 getWidth() - damageViewerBorder,
                 getHeight() - damageViewerBorder);
-        positionElement(leftDamageViewer, damageViewerBorder / 2, damageViewerBorder / 2);
         DeckViewer playerLeftDeck = SelectableDeckViewer.get(
                 getWidth() - damageViewerBorder,
                 (getHeight() - damageViewerBorder) / 2);
