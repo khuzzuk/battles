@@ -96,6 +96,22 @@ class BattleDecks extends AnchorPane {
         rightDeck.addCard(card);
     }
 
+    void setLeftDeckOnAction(Runnable action) {
+        setDeckOnAction(leftDeck, action);
+    }
+
+    void setCenterDeckOnAction(Runnable action) {
+        setDeckOnAction(centerDeck, action);
+    }
+
+    void setRightDeckOnAction(Runnable action) {
+        setDeckOnAction(rightDeck, action);
+    }
+
+    private void setDeckOnAction(DeckViewer deckViewer, Runnable action) {
+        deckViewer.setOnMouseClicked(event -> action.run());
+    }
+
     void removeCard(CardViewer cardViewer) {
         leftDeck.removeCard(cardViewer);
         centerDeck.removeCard(cardViewer);

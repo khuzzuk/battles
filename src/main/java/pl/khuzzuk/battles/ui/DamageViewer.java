@@ -1,6 +1,5 @@
 package pl.khuzzuk.battles.ui;
 
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import lombok.AccessLevel;
@@ -9,7 +8,7 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
-public class DamageViewer extends AnchorPane {
+class DamageViewer extends PositionablePane {
     private Rectangle backElement;
     static DamageViewer get(double startingWidth, double startingHeight) {
         DamageViewer damageViewer = new DamageViewer();
@@ -23,20 +22,14 @@ public class DamageViewer extends AnchorPane {
         backElement = new Rectangle(getWidth(), getHeight());
         backElement.setStrokeWidth(0);
         backElement.setFill(new Color(0.01, 0.01, 0.01, 0.5));
-        AnchorPane.setLeftAnchor(backElement, 0d);
-        AnchorPane.setTopAnchor(backElement, 0d);
-        getChildren().add(backElement);
+        positionElement(backElement, 0d, 0d);
     }
 
-    private void addPlayerDeck(DeckViewer viewer) {
-        AnchorPane.setLeftAnchor(viewer, 0d);
-        AnchorPane.setTopAnchor(viewer, viewer.getHeight());
-        getChildren().add(viewer);
+    void addPlayerDeck(DeckViewer viewer) {
+        positionElement(viewer, 0d, viewer.getHeight());
     }
 
-    private void addOpponentDeck(DeckViewer viewer) {
-        AnchorPane.setLeftAnchor(viewer, 0d);
-        AnchorPane.setTopAnchor(viewer, 0d);
-        getChildren().add(viewer);
+    void addOpponentDeck(DeckViewer viewer) {
+        positionElement(viewer, 0d, 0d);
     }
 }

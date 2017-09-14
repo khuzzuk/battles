@@ -78,4 +78,8 @@ class DeckViewer extends AnchorPane {
     List<Card> getCardsFromDeck() {
         return deck.stream().map(CardViewer::getCard).collect(Collectors.toList());
     }
+
+    void clear() {
+        deck.clear();
+    }
 }
