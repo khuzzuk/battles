@@ -17,7 +17,7 @@ class SelectableDeckViewer extends DeckViewer {
     CardViewer addCard(Card card) {
         CardViewer viewer = CardViewer.instance(card, (int) getMaxHeight());
         getDeck().add(viewer);
-        viewer.addSelectionEffect(this::markSelected, this::deselect);
+        viewer.addSelectionEffect(this::markSelected);
         return viewer;
     }
 

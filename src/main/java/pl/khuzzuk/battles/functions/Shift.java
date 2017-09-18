@@ -10,7 +10,7 @@ import java.util.Queue;
 public class Shift<T> {
     private Queue<T> switchQueue;
 
-    public Shift<T> get(T first, T second) {
+    public static <T> Shift<T> get(T first, T second) {
         Shift<T> shift = new Shift<>();
         shift.switchQueue = new ArrayDeque<>(2);
         shift.switchQueue.add(first);

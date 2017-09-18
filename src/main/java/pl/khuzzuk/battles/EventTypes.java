@@ -15,6 +15,7 @@ public interface EventTypes {
     }
 
     interface User {
-        String SELECT_CARD = "SELECT_CARD";
+        String SELECT_CARD = "SELECT_PLAYER_CARD";
+        String DESELECT_CARD = "DESELECT_PLAYER_CARD";
     }
 }
