@@ -16,11 +16,6 @@ public class Switcher {
         return switcher;
     }
 
-    private void on() {
-        on.run();
-        shift = Shift.get(off, on);
-    }
-
     public void off() {
         off.run();
         shift = Shift.get(on, off);

@@ -1,13 +1,11 @@
 package pl.khuzzuk.battles.ui;
 
 import javafx.scene.image.Image;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import pl.khuzzuk.battles.cards.Card;
 
 import java.util.HashMap;
@@ -15,13 +13,10 @@ import java.util.Map;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
-class CardViewer extends AnchorPane implements Decorative, Focusable<CardViewer>, Selectable<CardViewer, Rectangle> {
+class CardViewer extends PositionablePane implements Decorative, Focusable<CardViewer>, Selectable<CardViewer, Rectangle> {
     private static final Map<String, Image> cacheOfImages = new HashMap<>();
     private final Card card;
-    @Setter
-    private boolean selected;
     private Rectangle backElement;
-    private Color baseStroke;
 
     static CardViewer instance(Card card, int areaHeight) {
         CardViewer viewer = new CardViewer(card);
@@ -35,22 +30,14 @@ class CardViewer extends AnchorPane implements Decorative, Focusable<CardViewer>
         backElement.setArcHeight(size);
         setBackground(backgroundImage, backElement);
         backElement.setStrokeWidth(1d);
-        baseStroke = Color.BLACK;
-        backElement.setStroke(baseStroke);
+        backElement.setStroke(Color.BLACK);
+        positionElement(backElement, 0d, 0d);
 
         CardContentFrame frame = CardContentFrame.get(card, backgroundImage, size);
-        AnchorPane.setTopAnchor(frame, size * 3d);
-        AnchorPane.setBottomAnchor(frame, size / 2d);
-        AnchorPane.setLeftAnchor(frame, size / 2d);
-        AnchorPane.setRightAnchor(frame, size / 2d);
+        positionElement(frame, size / 2d, size * 3d);
 
         CardHeader header = CardHeader.get(backgroundImage, size * 8, card.getName());
-        AnchorPane.setTopAnchor(header, size / 3d);
-        AnchorPane.setBottomAnchor(header, frame.getHeight() + 10d);
-        AnchorPane.setLeftAnchor(header, 10 + size / 2d);
-        AnchorPane.setRightAnchor(header, 10 + size / 2d);
-
-        getChildren().addAll(backElement, frame, header);
+        positionElement(header, 10 + size / 2d, size / 3d);
     }
 
     @Override

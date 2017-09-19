@@ -51,11 +51,11 @@ public class Battles extends Application {
             battleSetupViewer.addCardToDeck(cardRepository.getCard(CardRepository.CLIBANARII));
             battleSetupViewer.showDeck();
         });
-        BUS.sendCommunicate(Container.GET_CARD_REPO, cardRepoTopic);
-        BUS.setGuiReaction(Stages.FORMATION_READY, battleSetup -> {
+        BUS.sendCommunicate(Container.GET_CARD_REPO.name(), cardRepoTopic);
+        BUS.setGuiReaction(Stages.FORMATION_READY.name(), battleSetup -> {
             root.getChildren().clear();
             root.getChildren().add(BattleView.get(width, height));
-            BUS.send(Stages.BATTLE_TABLE_READY, battleSetup);
+            BUS.send(Stages.BATTLE_TABLE_READY.name(), battleSetup);
         });
         root.getChildren().add(battleSetupViewer);
     }

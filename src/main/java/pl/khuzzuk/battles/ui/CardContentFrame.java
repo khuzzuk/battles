@@ -13,8 +13,8 @@ import lombok.RequiredArgsConstructor;
 import pl.khuzzuk.battles.cards.Card;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-class CardContentFrame extends AnchorPane implements Hexagonal, Decorative {
-    private final int R;
+class CardContentFrame extends PositionablePane implements Hexagonal, Decorative {
+    private final int hexR;
     private final Image background;
     private double frameScale;
     private int iconsR;
@@ -23,8 +23,8 @@ class CardContentFrame extends AnchorPane implements Hexagonal, Decorative {
 
     static CardContentFrame get(Card card, Image background, int hexSize) {
         CardContentFrame frame = new CardContentFrame(hexSize, background);
-        frame.frameScale = frame.R / 8d;
-        frame.iconsR = (int) (frame.R - frame.frameScale * 2);
+        frame.frameScale = frame.hexR / 8d;
+        frame.iconsR = (int) (frame.hexR - frame.frameScale * 1.5);
         frame.setupShape();
         frame.addCardParams(card);
         return frame;
@@ -78,13 +78,13 @@ class CardContentFrame extends AnchorPane implements Hexagonal, Decorative {
         outerList.clear();
         innerList.clear();
 
-        MoveTo startingPoint = getStartingPoint(getCol(2, R), getRow(0, R), R, 5);
+        MoveTo startingPoint = getStartingPoint(getCol(2, hexR), getRow(0, hexR), hexR, 5);
         outerList.add(startingPoint);
         innerList.add(new MoveTo(translateX(startingPoint.getX(), 5), translateY(startingPoint.getY(), 5)));
     }
 
     private void drawWith(int row, int col, int[] points) {
-        LineTo[] drawings = drawLines(getCol(col, R), getRow(row, R), R, points);
+        LineTo[] drawings = drawLines(getCol(col, hexR), getRow(row, hexR), hexR, points);
         LineTo[] innerDrawings = new LineTo[drawings.length];
         int size = drawings.length - 1;
         for (int i = 0; i < size; i++) {
@@ -107,19 +107,19 @@ class CardContentFrame extends AnchorPane implements Hexagonal, Decorative {
     }
 
     private void addIcon(int row, int col, String content) {
-        int x = getCol(col, R);
+        int x = getCol(col, hexR);
+        double topAnchor = (hexR * 3d / 2 + 0.25) * row + frameScale * 2;
+        double leftAnchor = x + frameScale * 2 - 1;
+
         Path icon = getHex(0, 0, iconsR);
         setBackground(background, icon);
         addDropShadow(icon);
+        positionElement(icon, leftAnchor, topAnchor);
 
-        Path innerIcon = getHex(0, 0, (int) (iconsR - frameScale));
+        Path innerIcon = getHex(0, 0, (int) (iconsR - frameScale / 2));
         setBackground(background, innerIcon);
         addInnerShadow(innerIcon);
-
-        AnchorPane.setLeftAnchor(icon, x + frameScale * 2 - 1);
-        AnchorPane.setTopAnchor(icon, (R * 3d / 2 + 0.25) * row + frameScale * 2);
-        AnchorPane.setLeftAnchor(innerIcon, x + frameScale * 3 - 1.5);
-        AnchorPane.setTopAnchor(innerIcon, (R * 3d / 2 + 0.25) * row + frameScale * 3);
+        positionElement(innerIcon, leftAnchor + frameScale, topAnchor + frameScale);
 
         HBox textBox = new HBox();
         Label text = new Label(content);
@@ -129,9 +129,7 @@ class CardContentFrame extends AnchorPane implements Hexagonal, Decorative {
         double boxSize = iconsR * 2d;
         textBox.setMinHeight(boxSize);
         textBox.setMinWidth(boxSize);
-        AnchorPane.setLeftAnchor(textBox, x + frameScale);
-        AnchorPane.setTopAnchor(textBox, (R * 3d / 2 + 0.25) * row + frameScale * 2);
-        getChildren().addAll(icon, innerIcon, textBox);
+        positionElement(textBox, leftAnchor - 1, topAnchor);
     }
 
     private double translateX(double x, int position) {

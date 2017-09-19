@@ -15,7 +15,7 @@ public class CardSelectionController {
     public static CardSelectionController get() {
         CardSelectionController controller = new CardSelectionController();
         controller.switcher = emptySwitcher;
-        BUS.setGuiReaction(User.SELECT_CARD, controller::select);
+        BUS.setGuiReaction(User.SELECT_CARD.name(), controller::select);
         return controller;
     }
 

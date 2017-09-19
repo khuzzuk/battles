@@ -1,17 +1,18 @@
 package pl.khuzzuk.battles.ui;
 
-import javafx.scene.layout.AnchorPane;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import pl.khuzzuk.battles.cards.Card;
+import pl.khuzzuk.battles.functions.Calculations;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @NoArgsConstructor(access = AccessLevel.PACKAGE)
-class DeckViewer extends AnchorPane {
+class DeckViewer extends PositionablePane {
     @Getter(AccessLevel.PACKAGE)
     private List<CardViewer> deck;
     @Getter(AccessLevel.PACKAGE)
@@ -33,14 +34,7 @@ class DeckViewer extends AnchorPane {
     void addCard(CardViewer cardViewer, double x) {
         int size = deck.size();
         deck.remove(cardViewer);
-        double width = getWidth() / size;
-        for (int i = 0; i < size; i++) {
-            if (width * i < x && width * (i + 1) > x) {
-                deck.add(i, cardViewer);
-                return;
-            }
-        }
-        deck.add(cardViewer);
+        deck.add(Calculations.middle(0, (int) Math.round(x / (getWidth() / size)), size - 1), cardViewer);
     }
 
     CardViewer addCard(Card card) {
@@ -58,12 +52,9 @@ class DeckViewer extends AnchorPane {
     void repaintDeck() {
         getChildren().clear();
         int space = (int) (getMaxWidth() / deck.size() - frameSize);
-        for (int i = 0; i < deck.size(); i++) {
-            CardViewer cardViewer = deck.get(i);
-            AnchorPane.setLeftAnchor(cardViewer, (double) (space * i + frameSize));
-            AnchorPane.setTopAnchor(cardViewer, 0d);
-            getChildren().add(cardViewer);
-        }
+        AtomicInteger counter = new AtomicInteger();
+        deck.forEach(cardViewer ->
+                positionElement(cardViewer, space * counter.getAndIncrement() + (double) frameSize, 0d));
     }
 
     void addOnTop(CardViewer viewer) {

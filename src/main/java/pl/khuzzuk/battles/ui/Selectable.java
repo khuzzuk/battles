@@ -24,21 +24,8 @@ public interface Selectable<T extends Pane, U extends Shape> extends Element<T> 
                     whenSelected.accept(this);
                 },
                 () -> background.setStroke(baseStroke));
-        node.setOnMouseClicked(event -> BUS.send(EventTypes.User.SELECT_CARD, switcher));
+        node.setOnMouseClicked(event -> BUS.send(EventTypes.User.SELECT_CARD.name(), switcher));
     }
 
     U getBackElement();
-
-    Paint getBaseStroke();
-
-    boolean isSelected();
-
-    void setSelected(boolean isSelected);
-
-    default void deselect() {
-        getBackElement().setStroke(getBaseStroke());
-    }
-
-    default void select() {
-    }
 }

@@ -98,13 +98,13 @@ public class BattleSetupViewer extends AnchorPane {
         int cardsOnTable = battleDeck.size();
         int cardsInPlay = cardsOnHand + cardsOnTable;
         return cardsInPlay / 2 > cardsOnHand
-                && battleDeck.getLeftDeck().size() > 0
-                && battleDeck.getCenterDeck().size() > 0
-                && battleDeck.getRightDeck().size() > 0;
+                && !battleDeck.getLeftDeck().isEmpty()
+                && !battleDeck.getCenterDeck().isEmpty()
+                && !battleDeck.getRightDeck().isEmpty();
     }
 
     private void toBattleStage() {
-        BUS.send(Stages.FORMATION_READY, BattleSetup.get(
+        BUS.send(Stages.FORMATION_READY.name(), BattleSetup.get(
                 deck.getCardsFromDeck(),
                 battleDeck.getLeftDeck(),
                 battleDeck.getCenterDeck(),

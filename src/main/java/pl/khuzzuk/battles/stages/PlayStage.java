@@ -23,18 +23,18 @@ public class PlayStage {
         PlayStage stage = new PlayStage();
         String setCardRepo = "setCardRepoInPlayStage";
         BUS.setReaction(setCardRepo, stage::setCardRepository);
-        BUS.setReaction(Stages.BATTLE_TABLE_READY, stage::startBattle);
-        BUS.sendCommunicate(Container.GET_CARD_REPO, setCardRepo);
+        BUS.setReaction(Stages.BATTLE_TABLE_READY.name(), stage::startBattle);
+        BUS.sendCommunicate(Container.GET_CARD_REPO.name(), setCardRepo);
         return stage;
     }
 
     private void startBattle(BattleSetup battleSetup) {
-        BattleSetup aiBattleSetup = getAIBattleSetup(30, cardRepository.getAllCards());
-        BUS.send(Stages.BATTLE_START_PLAYER, battleSetup);
-        BUS.send(Stages.BATTLE_START_OPPONENT, aiBattleSetup);
+        BattleSetup aiBattleSetup = getAIBattleSetup(cardRepository.getAllCards());
+        BUS.send(Stages.BATTLE_START_PLAYER.name(), battleSetup);
+        BUS.send(Stages.BATTLE_START_OPPONENT.name(), aiBattleSetup);
     }
 
-    private BattleSetup getAIBattleSetup(int value, List<Card> availableCards) {
+    private BattleSetup getAIBattleSetup(List<Card> availableCards) {
         return BattleSetup.get(
                 fillRandomly(availableCards, 3),
                 fillRandomly(availableCards, 4),

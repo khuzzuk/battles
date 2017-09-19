@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 class DamageViewer extends PositionablePane {
-    private Rectangle backElement;
     static DamageViewer get(double startingWidth, double startingHeight) {
         DamageViewer damageViewer = new DamageViewer();
         damageViewer.setWidth(startingWidth);
@@ -19,7 +18,7 @@ class DamageViewer extends PositionablePane {
     }
 
     private void setupBack() {
-        backElement = new Rectangle(getWidth(), getHeight());
+        Rectangle backElement = new Rectangle(getWidth(), getHeight());
         backElement.setStrokeWidth(0);
         backElement.setFill(new Color(0.01, 0.01, 0.01, 0.5));
         positionElement(backElement, 0d, 0d);

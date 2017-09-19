@@ -26,8 +26,8 @@ public class BattleView extends PositionablePane {
         battleView.damageViewerBorder = width * 0.05;
         battleView.menuManager = MenuManager.get();
         battleView.deckHeight = (height - battleView.menuManager.menuHeight) / 3d;
-        BUS.setGuiReaction(Stages.BATTLE_START_PLAYER, battleView::setPlayerSetup);
-        BUS.setGuiReaction(Stages.BATTLE_START_OPPONENT, battleView::setOpponentSetup);
+        BUS.setGuiReaction(Stages.BATTLE_START_PLAYER.name(), battleView::setPlayerSetup);
+        BUS.setGuiReaction(Stages.BATTLE_START_OPPONENT.name(), battleView::setOpponentSetup);
         battleView.setupMenu();
         return battleView;
     }
