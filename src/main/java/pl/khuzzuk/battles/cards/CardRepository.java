@@ -17,15 +17,6 @@ import java.util.stream.Collectors;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CardRepository {
     private Map<String, Card> cards;
-    public static final String COMITATENSES_V_MACEDONIA = "Com. V Maced.";
-    public static final String AUX_P_CORNUTI = "Aux.P.Cornuti";
-    public static final String AUX_PALATINA = "Auxilia Palatina";
-    public static final String CATAPHRACTARII = "Cataphractarii";
-    public static final String CLIBANARII = "Clibanarii";
-    public static final String CLIBANARII_PARTHII = "Clibanarii Parthii";
-    public static final String COMITES_CLIBANARII = "Comites Clibanarii";
-    public static final String EQUITES_DALMATAE = "Equites Dalmatae";
-    public static final String EQUITES_SAGITARII = "Equites Sagitarii";
     private CardStyleRepository styleRepository;
 
     public static CardRepository get() {

@@ -1,6 +1,7 @@
 package pl.khuzzuk.battles.ui;
 
 import javafx.scene.control.Button;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -17,6 +18,7 @@ public class BattleView extends PositionablePane {
     private BattleSetup playerSetup;
     private double damageViewerBorder;
     private DamageViewer leftDamageViewer;
+    private BattleSetup opponentSetup;
 
     public static BattleView get(int width, int height) {
         BattleView battleView = new BattleView();
@@ -52,6 +54,7 @@ public class BattleView extends PositionablePane {
     }
 
     private void setOpponentSetup(BattleSetup opponentSetup) {
+        this.opponentSetup = opponentSetup;
         BattleDecks opponentBattleDecks = BattleDecks.get(getWidth(), deckHeight);
         fillBattleDecksViewer(opponentBattleDecks, opponentSetup);
         AnchorPane.setLeftAnchor(opponentBattleDecks, 0d);
@@ -68,17 +71,32 @@ public class BattleView extends PositionablePane {
     }
 
     private Runnable showLeftDamageViewerEventHandler() {
-        leftDamageViewer = DamageViewer.get(
-                getWidth() - damageViewerBorder,
-                getHeight() - damageViewerBorder);
         DeckViewer playerLeftDeck = SelectableDeckViewer.get(
                 getWidth() - damageViewerBorder,
                 (getHeight() - damageViewerBorder) / 2);
-        leftDamageViewer.addPlayerDeck(playerLeftDeck);
+
+        DeckViewer opponentLeftDeck = SelectableDeckViewer.get(
+                getWidth() - damageViewerBorder,
+                (getHeight() - damageViewerBorder) / 2
+        );
+
+        leftDamageViewer = DamageViewer.get(getWidth() - damageViewerBorder,
+                getHeight() - damageViewerBorder, playerLeftDeck, opponentLeftDeck);
+        leftDamageViewer.setOnMouseClicked(event -> {
+            if (event.getButton().equals(MouseButton.SECONDARY)) {
+                getChildren().removeAll(leftDamageViewer);
+            }
+        });
+
         return () -> {
+            opponentLeftDeck.clear();
+            opponentSetup.getLeft().forEach(opponentLeftDeck::addCard);
+            opponentLeftDeck.repaintDeck();
+
             playerLeftDeck.clear();
             playerSetup.getLeft().forEach(playerLeftDeck::addCard);
             playerLeftDeck.repaintDeck();
+
             getChildren().removeAll(leftDamageViewer);
             positionElement(leftDamageViewer, damageViewerBorder / 2, damageViewerBorder / 2);
         };

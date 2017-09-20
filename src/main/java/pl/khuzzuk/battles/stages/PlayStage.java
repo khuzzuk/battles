@@ -1,6 +1,7 @@
 package pl.khuzzuk.battles.stages;
 
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import pl.khuzzuk.battles.EventTypes.Container;
@@ -18,6 +19,7 @@ import static pl.khuzzuk.battles.Battles.BUS;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class PlayStage {
     @Setter(AccessLevel.PRIVATE)
+    @Getter
     private CardRepository cardRepository;
     public static PlayStage get() {
         PlayStage stage = new PlayStage();
@@ -34,7 +36,7 @@ public class PlayStage {
         BUS.send(Stages.BATTLE_START_OPPONENT.name(), aiBattleSetup);
     }
 
-    private BattleSetup getAIBattleSetup(List<Card> availableCards) {
+    public static BattleSetup getAIBattleSetup(List<Card> availableCards) {
         return BattleSetup.get(
                 fillRandomly(availableCards, 3),
                 fillRandomly(availableCards, 4),
@@ -42,7 +44,7 @@ public class PlayStage {
                 fillRandomly(availableCards, 4));
     }
 
-    private List<Card> fillRandomly(List<Card> cards, int size) {
+    private static List<Card> fillRandomly(List<Card> cards, int size) {
         Random random = new Random();
         List<Card> backCards = new ArrayList<>();
         for (int i = 0; i < size; i++) {

@@ -18,9 +18,7 @@ public interface Focusable<T extends Node> extends Element<T> {
                     focusTransition.play();
                 }));
         node.setOnMouseExited(Optional.ofNullable(node.getOnMouseExited())
-                .orElseGet(() -> event -> {
-                    focusLostTransition.play();
-                }));
+                .orElseGet(() -> event -> focusLostTransition.play()));
     }
 
     //TODO make private with java9

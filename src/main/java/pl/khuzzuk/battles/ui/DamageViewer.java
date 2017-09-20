@@ -9,11 +9,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 class DamageViewer extends PositionablePane {
-    static DamageViewer get(double startingWidth, double startingHeight) {
+    static DamageViewer get(double startingWidth, double startingHeight,
+                            DeckViewer playerDeck, DeckViewer opponentDeck) {
         DamageViewer damageViewer = new DamageViewer();
         damageViewer.setWidth(startingWidth);
         damageViewer.setHeight(startingHeight);
         damageViewer.setupBack();
+        damageViewer.positionElement(opponentDeck, 0d, 0d);
+        damageViewer.positionElement(playerDeck, 0d, startingHeight / 2);
         return damageViewer;
     }
 
@@ -22,13 +25,5 @@ class DamageViewer extends PositionablePane {
         backElement.setStrokeWidth(0);
         backElement.setFill(new Color(0.01, 0.01, 0.01, 0.5));
         positionElement(backElement, 0d, 0d);
-    }
-
-    void addPlayerDeck(DeckViewer viewer) {
-        positionElement(viewer, 0d, viewer.getHeight());
-    }
-
-    void addOpponentDeck(DeckViewer viewer) {
-        positionElement(viewer, 0d, 0d);
     }
 }
