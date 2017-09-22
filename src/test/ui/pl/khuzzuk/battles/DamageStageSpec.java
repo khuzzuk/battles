@@ -1,40 +1,40 @@
 package pl.khuzzuk.battles;
 
+import groovy.transform.CompileStatic;
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import pl.khuzzuk.battles.EventTypes.Stages;
 import pl.khuzzuk.battles.cards.CardRepository;
 import pl.khuzzuk.battles.stages.PlayStage;
 import pl.khuzzuk.battles.ui.BattleView;
 import pl.khuzzuk.messaging.Bus;
 
-public class Battles extends Application {
-    private static Bus bus;
+@CompileStatic
+public class DamageStageSpec extends Application {
+    private Bus BUS = Bus.initializeBus(true);
 
     public static void main(String[] args) {
-        bus = Bus.initializeBus();
-        ObjectContainer.putBeans(bus);
-        launch(args);
+        Application.launch();
     }
 
     @Override
     public void start(Stage stage) throws Exception {
+        ObjectContainer.putBeans(BUS);
+
         stage.setTitle("Battles");
-        stage.setOnCloseRequest(event -> bus.closeBus());
+        stage.setOnCloseRequest(event -> BUS.closeBus());
         stage.setMaximized(true);
         Group root = new Group();
         stage.setScene(new Scene(root));
         stage.show();
 
-        //TODO remove Card Repo from here, just to hack
         CardRepository cardRepository = CardRepository.get();
 
         int width = (int) stage.getScene().getWidth();
         int height = (int) stage.getScene().getHeight();
         root.getChildren().clear();
-        root.getChildren().add(BattleView.get(width, height, bus));
-        bus.send(Stages.BATTLE_TABLE_READY.name(), PlayStage.getAIBattleSetup(cardRepository.getAllCards()));
+        root.getChildren().add(BattleView.get(width, height, BUS));
+        BUS.send(EventTypes.Stages.BATTLE_TABLE_READY.name(), PlayStage.getAIBattleSetup(cardRepository.getAllCards()));
     }
 }

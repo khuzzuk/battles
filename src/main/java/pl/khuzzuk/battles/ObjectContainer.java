@@ -5,18 +5,18 @@ import pl.khuzzuk.battles.EventTypes.Container;
 import pl.khuzzuk.battles.cards.CardRepository;
 import pl.khuzzuk.battles.stages.PlayStage;
 import pl.khuzzuk.battles.ui.CardSelectionController;
-
-import static pl.khuzzuk.battles.Battles.BUS;
+import pl.khuzzuk.messaging.Bus;
 
 @UtilityClass
 class ObjectContainer {
-    static void putBeans() {
-        putToContainer(Container.GET_CARD_REPO.name(), CardRepository.get());
-        putToContainer(Container.GET_PLAY_STAGE.name(), PlayStage.get());
-        putToContainer(Container.GET_CARD_SELECTION_CONTROLLER.name(), CardSelectionController.get());
+    static void putBeans(Bus bus) {
+        putToContainer(bus, Container.GET_CARD_REPO, CardRepository.get());
+        putToContainer(bus, Container.GET_PLAY_STAGE, PlayStage.get(bus));
+        putToContainer(bus, Container.GET_CARD_SELECTION_CONTROLLER, CardSelectionController.get(bus, EventTypes.User.SELECT_CARD));
+        putToContainer(bus, Container.GET_OPPONENT_CARD_SELECTION_CONTROLLER, CardSelectionController.get(bus, EventTypes.User.SELECT_OPPONENT_CARD));
     }
 
-    private static <T> void putToContainer(String eventType, T bean) {
-        BUS.setResponse(eventType, () -> bean);
+    static <T> void putToContainer(Bus bus, Enum<?> eventType, T bean) {
+        bus.setResponse(eventType.name(), () -> bean);
     }
 }

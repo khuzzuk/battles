@@ -4,15 +4,13 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Shape;
-import pl.khuzzuk.battles.EventTypes;
 import pl.khuzzuk.battles.functions.Switcher;
+import pl.khuzzuk.messaging.Bus;
 
 import java.util.function.Consumer;
 
-import static pl.khuzzuk.battles.Battles.BUS;
-
 public interface Selectable<T extends Pane, U extends Shape> extends Element<T> {
-    default void addSelectionEffect(Consumer<? super Selectable<T, U>> whenSelected) {
+    default void addSelectionEffect(Consumer<? super Selectable<T, U>> whenSelected, Bus bus, Enum<?> event) {
         T node = getElement();
         U background = getBackElement();
         Paint baseStroke = background.getStroke();
@@ -24,7 +22,7 @@ public interface Selectable<T extends Pane, U extends Shape> extends Element<T> 
                     whenSelected.accept(this);
                 },
                 () -> background.setStroke(baseStroke));
-        node.setOnMouseClicked(event -> BUS.send(EventTypes.User.SELECT_CARD.name(), switcher));
+        node.setOnMouseClicked(mouseEvent -> bus.send(event.name(), switcher));
     }
 
     U getBackElement();

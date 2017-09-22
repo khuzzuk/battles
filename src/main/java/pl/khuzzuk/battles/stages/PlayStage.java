@@ -1,32 +1,30 @@
 package pl.khuzzuk.battles.stages;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import pl.khuzzuk.battles.EventTypes.Container;
 import pl.khuzzuk.battles.EventTypes.Stages;
 import pl.khuzzuk.battles.cards.Card;
 import pl.khuzzuk.battles.cards.CardRepository;
 import pl.khuzzuk.battles.decks.BattleSetup;
+import pl.khuzzuk.messaging.Bus;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import static pl.khuzzuk.battles.Battles.BUS;
-
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class PlayStage {
+    private final Bus BUS;
     @Setter(AccessLevel.PRIVATE)
     @Getter
     private CardRepository cardRepository;
-    public static PlayStage get() {
-        PlayStage stage = new PlayStage();
+
+    public static PlayStage get(Bus bus) {
+        PlayStage stage = new PlayStage(bus);
         String setCardRepo = "setCardRepoInPlayStage";
-        BUS.setReaction(setCardRepo, stage::setCardRepository);
-        BUS.setReaction(Stages.BATTLE_TABLE_READY.name(), stage::startBattle);
-        BUS.sendCommunicate(Container.GET_CARD_REPO.name(), setCardRepo);
+        bus.setReaction(setCardRepo, stage::setCardRepository);
+        bus.setReaction(Stages.BATTLE_TABLE_READY.name(), stage::startBattle);
+        bus.sendCommunicate(Container.GET_CARD_REPO.name(), setCardRepo);
         return stage;
     }
 

@@ -4,14 +4,17 @@ import javafx.scene.control.Button;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
 import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import pl.khuzzuk.battles.EventTypes;
 import pl.khuzzuk.battles.EventTypes.Stages;
 import pl.khuzzuk.battles.decks.BattleSetup;
+import pl.khuzzuk.messaging.Bus;
 
-import static pl.khuzzuk.battles.Battles.BUS;
-
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class BattleView extends PositionablePane {
+    @NonNull
+    private Bus bus;
     private Button nextRoundButton;
     private MenuManager menuManager;
     private double deckHeight;
@@ -20,16 +23,17 @@ public class BattleView extends PositionablePane {
     private DamageViewer leftDamageViewer;
     private BattleSetup opponentSetup;
 
-    public static BattleView get(int width, int height) {
-        BattleView battleView = new BattleView();
+    public static BattleView get(int width, int height, Bus bus) {
+        BattleView battleView = new BattleView(bus);
+        battleView.bus = bus;
         battleView.setWidth(width);
         battleView.setMinWidth(width);
         battleView.setMinHeight(height);
         battleView.damageViewerBorder = width * 0.05;
         battleView.menuManager = MenuManager.get();
         battleView.deckHeight = (height - battleView.menuManager.menuHeight) / 3d;
-        BUS.setGuiReaction(Stages.BATTLE_START_PLAYER.name(), battleView::setPlayerSetup);
-        BUS.setGuiReaction(Stages.BATTLE_START_OPPONENT.name(), battleView::setOpponentSetup);
+        bus.setGuiReaction(Stages.BATTLE_START_PLAYER.name(), battleView::setPlayerSetup);
+        bus.setGuiReaction(Stages.BATTLE_START_OPPONENT.name(), battleView::setOpponentSetup);
         battleView.setupMenu();
         return battleView;
     }
@@ -73,12 +77,11 @@ public class BattleView extends PositionablePane {
     private Runnable showLeftDamageViewerEventHandler() {
         DeckViewer playerLeftDeck = SelectableDeckViewer.get(
                 getWidth() - damageViewerBorder,
-                (getHeight() - damageViewerBorder) / 2);
+                (getHeight() - damageViewerBorder) / 2, bus, EventTypes.User.SELECT_CARD);
 
         DeckViewer opponentLeftDeck = SelectableDeckViewer.get(
                 getWidth() - damageViewerBorder,
-                (getHeight() - damageViewerBorder) / 2
-        );
+                (getHeight() - damageViewerBorder) / 2, bus, EventTypes.User.SELECT_OPPONENT_CARD);
 
         leftDamageViewer = DamageViewer.get(getWidth() - damageViewerBorder,
                 getHeight() - damageViewerBorder, playerLeftDeck, opponentLeftDeck);

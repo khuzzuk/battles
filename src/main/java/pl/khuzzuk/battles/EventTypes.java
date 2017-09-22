@@ -2,7 +2,7 @@ package pl.khuzzuk.battles;
 
 public interface EventTypes {
     enum Container {
-        GET_CARD_REPO, GET_PLAY_STAGE, GET_CARD_SELECTION_CONTROLLER
+        GET_CARD_REPO, GET_PLAY_STAGE, GET_CARD_SELECTION_CONTROLLER, GET_OPPONENT_CARD_SELECTION_CONTROLLER
     }
 
     enum Stages {
@@ -10,6 +10,6 @@ public interface EventTypes {
     }
 
     enum User {
-        SELECT_CARD
+        SELECT_CARD, SELECT_OPPONENT_CARD
     }
 }
