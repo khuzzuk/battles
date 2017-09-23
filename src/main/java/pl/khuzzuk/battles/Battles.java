@@ -28,7 +28,6 @@ public class Battles extends Application {
         stage.setScene(new Scene(root));
         stage.show();
 
-        //TODO remove Card Repo from here, just to hack
         CardRepository cardRepository = CardRepository.get();
 
         int width = (int) stage.getScene().getWidth();
