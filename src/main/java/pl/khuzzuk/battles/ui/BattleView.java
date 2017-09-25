@@ -10,6 +10,7 @@ import pl.khuzzuk.battles.EventTypes;
 import pl.khuzzuk.battles.EventTypes.Stages;
 import pl.khuzzuk.battles.cards.Card;
 import pl.khuzzuk.battles.decks.BattleSetup;
+import pl.khuzzuk.functions.MultiGate;
 import pl.khuzzuk.messaging.Bus;
 
 import java.util.Collection;
@@ -24,6 +25,9 @@ public class BattleView extends PositionablePane {
     private BattleSetup playerSetup;
     private double damageViewerBorder;
     private BattleSetup opponentSetup;
+    private MultiGate battleReady;
+    private BattleDecks playerBattleDecks;
+    private BattleDecks opponentBattleDecks;
 
     public static BattleView get(int width, int height, Bus bus) {
         BattleView battleView = new BattleView(bus);
@@ -34,6 +38,7 @@ public class BattleView extends PositionablePane {
         battleView.damageViewerBorder = width * 0.05;
         battleView.menuManager = MenuManager.get();
         battleView.deckHeight = (height - battleView.menuManager.menuHeight) / 3d;
+        battleView.setupDamageViewers();
         bus.setGuiReaction(Stages.BATTLE_START_PLAYER.name(), battleView::setPlayerSetup);
         bus.setGuiReaction(Stages.BATTLE_START_OPPONENT.name(), battleView::setOpponentSetup);
         battleView.setupMenu();
@@ -44,30 +49,39 @@ public class BattleView extends PositionablePane {
         nextRoundButton = menuManager.addButton("Next round", true, getChildren());
     }
 
+    private void setupDamageViewers() {
+        battleReady = MultiGate.of(2, () -> {
+            playerBattleDecks.setLeftDeckOnAction(showDamageViewerEventHandler(playerSetup.getLeft(), opponentSetup.getLeft()));
+            playerBattleDecks.setCenterDeckOnAction(showDamageViewerEventHandler(playerSetup.getCenter(), opponentSetup.getCenter()));
+            playerBattleDecks.setRightDeckOnAction(showDamageViewerEventHandler(playerSetup.getRight(), opponentSetup.getRight()));
+        }, () -> {});
+    }
+
     private void setPlayerSetup(BattleSetup playerSetup) {
         this.playerSetup = playerSetup;
 
-        BattleDecks playerBattleDecks = BattleDecks.get(getWidth(), deckHeight);
+        playerBattleDecks = BattleDecks.get(getWidth(), deckHeight);
         fillBattleDecksViewer(playerBattleDecks, playerSetup);
         positionElement(playerBattleDecks, 0d, menuManager.menuHeight + deckHeight);
         playerBattleDecks.repaintDecks();
-        playerBattleDecks.setLeftDeckOnAction(showLeftDamageViewerEventHandler(playerSetup.getLeft(), opponentSetup.getLeft()));
 
         DeckViewer playersBack = DeckViewer.get((int) getWidth(), (int) deckHeight);
         playerSetup.getBack().forEach(playersBack::addCard);
         playersBack.repaintDeck();
         positionElement(playersBack, 0d, menuManager.menuHeight + deckHeight * 2);
+        battleReady.on(0);
     }
 
     private void setOpponentSetup(BattleSetup opponentSetup) {
         this.opponentSetup = opponentSetup;
-        BattleDecks opponentBattleDecks = BattleDecks.get(getWidth(), deckHeight);
+        opponentBattleDecks = BattleDecks.get(getWidth(), deckHeight);
         fillBattleDecksViewer(opponentBattleDecks, opponentSetup);
         AnchorPane.setLeftAnchor(opponentBattleDecks, 0d);
         AnchorPane.setTopAnchor(opponentBattleDecks, (double) menuManager.menuHeight);
         opponentBattleDecks.repaintDecks();
         getChildren().add(opponentBattleDecks);
         opponentBattleDecks.toBack();
+        battleReady.on(1);
     }
 
     private void fillBattleDecksViewer(BattleDecks decks, BattleSetup setup) {
@@ -76,7 +90,7 @@ public class BattleView extends PositionablePane {
         setup.getRight().forEach(decks::addToRight);
     }
 
-    private Runnable showLeftDamageViewerEventHandler(Collection<Card> playerSetupDeck, Collection<Card> opponentSetupDeck) {
+    private Runnable showDamageViewerEventHandler(Collection<Card> playerSetupDeck, Collection<Card> opponentSetupDeck) {
         DeckViewer playerDeck = SelectableDeckViewer.get(
                 getWidth() - damageViewerBorder,
                 (getHeight() - damageViewerBorder) / 2, bus, EventTypes.User.SELECT_CARD);
