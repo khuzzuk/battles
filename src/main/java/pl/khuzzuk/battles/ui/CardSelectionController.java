@@ -2,7 +2,7 @@ package pl.khuzzuk.battles.ui;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import pl.khuzzuk.battles.functions.Switcher;
+import pl.khuzzuk.functions.Switcher;
 import pl.khuzzuk.messaging.Bus;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
