@@ -13,7 +13,7 @@ import java.util.Map;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
-class CardViewer extends PositionablePane implements Decorative, Focusable<CardViewer>, Selectable<CardViewer, Rectangle> {
+public class CardViewer extends PositionablePane implements Decorative, Focusable<CardViewer>, Selectable<CardViewer, Rectangle> {
     private static final Map<String, Image> cacheOfImages = new HashMap<>();
     private final Card card;
     private Rectangle backElement;

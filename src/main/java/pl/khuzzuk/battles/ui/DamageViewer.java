@@ -35,7 +35,7 @@ class DamageViewer extends PositionablePane {
         MenuManager menuManager = MenuManager.get();
         menuManager.addButton("Resolve", true, getChildren());
         int deckHeight = (int) ((getHeight() - MenuManager.menuHeight) / 2);
-        playerDeckViewer = SelectableDeckViewer.get((int) getWidth(), deckHeight, bus, EventTypes.User.SELECT_CARD);
+        playerDeckViewer = DeckViewer.get((int) getWidth(), deckHeight, );
         opponentDeckViewer = SelectableDeckViewer.get((int) getWidth(), deckHeight, bus, EventTypes.User.SELECT_OPPONENT_CARD);
         combineDecks(playerDeck, playerDeckViewer);
         combineDecks(opponentDeck, opponentDeckViewer);

@@ -18,16 +18,4 @@ class SelectableDeckViewer extends DeckViewer {
         deckViewer.event = event;
         return deckViewer;
     }
-
-    @Override
-    CardViewer addCard(Card card) {
-        CardViewer viewer = CardViewer.instance(card, (int) getMaxHeight());
-        getDeck().add(viewer);
-        viewer.addSelectionEffect(this::markSelected, bus, event);
-        return viewer;
-    }
-
-    private void markSelected(Selectable<CardViewer, ?> cardViewer) {
-        addOnTop(cardViewer.getElement());
-    }
 }
