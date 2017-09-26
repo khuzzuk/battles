@@ -7,21 +7,23 @@ import lombok.NoArgsConstructor;
 import pl.khuzzuk.battles.EventTypes;
 import pl.khuzzuk.battles.cards.Card;
 import pl.khuzzuk.battles.decks.Deck;
-import pl.khuzzuk.battles.ui.decorators.CardDecorator;
+import pl.khuzzuk.battles.ui.decorators.CardDecoratorManager;
+import pl.khuzzuk.battles.ui.decorators.FocusableDecorator;
+import pl.khuzzuk.battles.ui.decorators.SelectableDecorator;
 import pl.khuzzuk.messaging.Bus;
+
+import java.util.function.Predicate;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 class DamageViewer extends PositionablePane {
     private DeckViewer playerDeckViewer;
     private DeckViewer opponentDeckViewer;
 
-    static DamageViewer get(double startingWidth, double startingHeight,
-                            Deck playerDeck, Deck opponentDeck, Bus bus) {
+    static DamageViewer get(double startingWidth, double startingHeight) {
         DamageViewer damageViewer = new DamageViewer();
         damageViewer.setWidth(startingWidth);
         damageViewer.setHeight(startingHeight);
         damageViewer.setupBack();
-        damageViewer.setupDecks(playerDeck, opponentDeck, bus);
         return damageViewer;
     }
 
@@ -30,23 +32,30 @@ class DamageViewer extends PositionablePane {
         backElement.setStrokeWidth(0);
         backElement.setFill(new Color(0.01, 0.01, 0.01, 0.5));
         positionElement(backElement, 0d, 0d);
-    }
-
-    private void setupDecks(Deck playerDeck, Deck opponentDeck, Bus bus) {
         MenuManager menuManager = MenuManager.get();
         menuManager.addButton("Resolve", true, getChildren());
+    }
+
+    void setupDecks(Deck playerDeck, Deck opponentDeck, Bus bus, Predicate<Card> decoratorFilter) {
+        clear();
         int deckHeight = (int) ((getHeight() - MenuManager.menuHeight) / 2);
-        playerDeckViewer = DeckViewer.get((int) getWidth(), deckHeight, CardDecorator.getSelectableDecorators(bus, EventTypes.User.SELECT_CARD));
-        opponentDeckViewer = DeckViewer.get((int) getWidth(), deckHeight, CardDecorator.getSelectableDecorators(bus, EventTypes.User.SELECT_OPPONENT_CARD));
+
+        playerDeckViewer = DeckViewer.get((int) getWidth(), deckHeight, CardDecoratorManager.get()
+                .addFiltered(decoratorFilter, new SelectableDecorator(EventTypes.User.SELECT_CARD, bus))
+                .addUnfiltered(new FocusableDecorator()));
+        opponentDeckViewer = DeckViewer.get((int) getWidth(), deckHeight, CardDecoratorManager.get()
+                .addUnfiltered(new SelectableDecorator(EventTypes.User.SELECT_OPPONENT_CARD, bus))
+                .addUnfiltered(new FocusableDecorator()));
+
         combineDecks(playerDeck, playerDeckViewer);
         combineDecks(opponentDeck, opponentDeckViewer);
         positionElement(playerDeckViewer, 0d, (double) MenuManager.menuHeight);
         positionElement(opponentDeckViewer, 0d, getHeight() / 2 + (double) MenuManager.menuHeight);
+        repaint();
     }
 
     void clear() {
-        playerDeckViewer.clear();
-        opponentDeckViewer.clear();
+        getChildren().removeAll(playerDeckViewer, opponentDeckViewer);
     }
 
     private void combineDecks(Deck deck, DeckViewer deckViewer) {

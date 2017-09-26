@@ -1,9 +1,12 @@
 package pl.khuzzuk.battles.ui;
 
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import pl.khuzzuk.battles.cards.Card;
 import pl.khuzzuk.battles.functions.Calculations;
-import pl.khuzzuk.battles.ui.decorators.CardDecorator;
+import pl.khuzzuk.battles.ui.decorators.CardDecoratorManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,20 +19,20 @@ public class DeckViewer extends PositionablePane {
     private List<CardViewer> deck;
     @Getter(AccessLevel.PACKAGE)
     private int frameSize;
-    private List<CardDecorator> decorators;
-    static DeckViewer get(int windowWidth, int windowHeight, @NonNull List<CardDecorator> decorators) {
+    private CardDecoratorManager decoratorManager;
+    static DeckViewer get(int windowWidth, int windowHeight, @NonNull CardDecoratorManager decoratorManager) {
         DeckViewer viewer = new DeckViewer();
-        viewer.decorators = decorators;
+        viewer.decoratorManager = decoratorManager;
         viewer.setInitialValues(windowWidth, windowHeight);
         return viewer;
     }
 
-    void setInitialValues(double width, double height) {
+    private void setInitialValues(double width, double height) {
         setMaxWidth(width * 0.9);
         setMaxHeight(height);
         frameSize = (int) (getWidth() / 10);
         deck = new ArrayList<>();
-        setOnMouseExited(event -> deck.forEach(CardViewer::toBack));
+        setOnMouseExited(event -> deck.forEach(CardViewer::toFront));
     }
 
     void addCard(CardViewer cardViewer, double x) {
@@ -41,7 +44,7 @@ public class DeckViewer extends PositionablePane {
     CardViewer addCard(Card card) {
         CardViewer viewer = CardViewer.instance(card, (int) getMaxHeight());
         deck.add(viewer);
-        decorators.forEach(cardDecorator -> cardDecorator.addBehavior(this, viewer));
+        decoratorManager.handle(viewer, this);
         return viewer;
     }
 

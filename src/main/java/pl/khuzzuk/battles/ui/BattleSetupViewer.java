@@ -11,10 +11,9 @@ import pl.khuzzuk.battles.EventTypes.Stages;
 import pl.khuzzuk.battles.cards.Card;
 import pl.khuzzuk.battles.decks.BattleSetup;
 import pl.khuzzuk.battles.decks.Deck;
+import pl.khuzzuk.battles.ui.decorators.CardDecoratorManager;
 import pl.khuzzuk.battles.ui.decorators.FocusableDecorator;
 import pl.khuzzuk.messaging.Bus;
-
-import java.util.Collections;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class BattleSetupViewer extends PositionablePane {
@@ -45,7 +44,7 @@ public class BattleSetupViewer extends PositionablePane {
 
     private void setupDeckViewer() {
         Rectangle deckArea = new Rectangle(getWidth(), deckHeight);
-        deck = DeckViewer.get((int) getWidth(), (int) deckHeight, Collections.singletonList(new FocusableDecorator()));
+        deck = DeckViewer.get((int) getWidth(), (int) deckHeight, CardDecoratorManager.get().addUnfiltered(new FocusableDecorator()));
         double topAnchor = deckHeight + MenuManager.menuHeight;
         positionElement(deckArea, 0d, topAnchor);
         positionElement(deck, 0d, topAnchor);

@@ -7,13 +7,15 @@ import lombok.AccessLevel;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import pl.khuzzuk.battles.EventTypes.Stages;
+import pl.khuzzuk.battles.cards.Card;
 import pl.khuzzuk.battles.decks.BattleSetup;
 import pl.khuzzuk.battles.decks.Deck;
+import pl.khuzzuk.battles.ui.decorators.CardDecoratorManager;
 import pl.khuzzuk.battles.ui.decorators.FocusableDecorator;
 import pl.khuzzuk.functions.MultiGate;
 import pl.khuzzuk.messaging.Bus;
 
-import java.util.Collections;
+import java.util.function.Predicate;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class BattleView extends PositionablePane {
@@ -37,7 +39,7 @@ public class BattleView extends PositionablePane {
         battleView.setMinHeight(height);
         battleView.damageViewerBorder = width * 0.05;
         battleView.menuManager = MenuManager.get();
-        battleView.deckHeight = (height - battleView.menuManager.menuHeight) / 3d;
+        battleView.deckHeight = (height - MenuManager.menuHeight) / 3d;
         battleView.setupDamageViewers();
         bus.setGuiReaction(Stages.BATTLE_START_PLAYER.name(), battleView::setPlayerSetup);
         bus.setGuiReaction(Stages.BATTLE_START_OPPONENT.name(), battleView::setOpponentSetup);
@@ -51,9 +53,12 @@ public class BattleView extends PositionablePane {
 
     private void setupDamageViewers() {
         battleReady = MultiGate.of(2, () -> {
-            playerBattleDecks.setLeftDeckOnAction(showDamageViewerEventHandler(playerSetup.getLeft(), opponentSetup.getLeft()));
-            playerBattleDecks.setCenterDeckOnAction(showDamageViewerEventHandler(playerSetup.getCenter(), opponentSetup.getCenter()));
-            playerBattleDecks.setRightDeckOnAction(showDamageViewerEventHandler(playerSetup.getRight(), opponentSetup.getRight()));
+            playerBattleDecks.setLeftDeckOnAction(showDamageViewerEventHandler(playerSetup.getLeft(), opponentSetup.getLeft(),
+                    Stages.GET_DAMAGE_STAGE_LEFT, Stages.SHOW_DAMAGE_STAGE_LEFT));
+            playerBattleDecks.setCenterDeckOnAction(showDamageViewerEventHandler(playerSetup.getCenter(), opponentSetup.getCenter(),
+                    Stages.GET_DAMAGE_STAGE_CENTER, Stages.SHOW_DAMAGE_STAGE_CENTER));
+            playerBattleDecks.setRightDeckOnAction(showDamageViewerEventHandler(playerSetup.getRight(), opponentSetup.getRight(),
+                    Stages.GET_DAMAGE_STAGE_RIGHT, Stages.SHOW_DAMAGE_STAGE_RIGHT));
         }, () -> {});
     }
 
@@ -62,13 +67,13 @@ public class BattleView extends PositionablePane {
 
         playerBattleDecks = BattleDecks.get(getWidth(), deckHeight);
         fillBattleDecksViewer(playerBattleDecks, playerSetup);
-        positionElement(playerBattleDecks, 0d, menuManager.menuHeight + deckHeight);
+        positionElement(playerBattleDecks, 0d, MenuManager.menuHeight + deckHeight);
         playerBattleDecks.repaintDecks();
 
-        DeckViewer playersBack = DeckViewer.get((int) getWidth(), (int) deckHeight, Collections.singletonList(new FocusableDecorator()));
+        DeckViewer playersBack = DeckViewer.get((int) getWidth(), (int) deckHeight, CardDecoratorManager.get().addUnfiltered(new FocusableDecorator()));
         playerSetup.getBack().getCards().forEach(playersBack::addCard);
         playersBack.repaintDeck();
-        positionElement(playersBack, 0d, menuManager.menuHeight + deckHeight * 2);
+        positionElement(playersBack, 0d, MenuManager.menuHeight + deckHeight * 2);
         battleReady.on(0);
     }
 
@@ -77,7 +82,7 @@ public class BattleView extends PositionablePane {
         opponentBattleDecks = BattleDecks.get(getWidth(), deckHeight);
         fillBattleDecksViewer(opponentBattleDecks, opponentSetup);
         AnchorPane.setLeftAnchor(opponentBattleDecks, 0d);
-        AnchorPane.setTopAnchor(opponentBattleDecks, (double) menuManager.menuHeight);
+        AnchorPane.setTopAnchor(opponentBattleDecks, (double) MenuManager.menuHeight);
         opponentBattleDecks.repaintDecks();
         getChildren().add(opponentBattleDecks);
         opponentBattleDecks.toBack();
@@ -90,24 +95,23 @@ public class BattleView extends PositionablePane {
         setup.getRight().getCards().forEach(decks::addToRight);
     }
 
-    private Runnable showDamageViewerEventHandler(Deck playerSetupDeck, Deck opponentSetupDeck) {
+    private Runnable showDamageViewerEventHandler(Deck playerSetupDeck, Deck opponentSetupDeck, Enum<?> requestType, Enum<?> responseType) {
         DamageViewer damageViewer = DamageViewer.get(getWidth() - damageViewerBorder,
-                getHeight() - damageViewerBorder, playerSetupDeck, opponentSetupDeck, bus);
+                getHeight() - damageViewerBorder);
         damageViewer.setOnMouseClicked(event -> {
             if (event.getButton().equals(MouseButton.SECONDARY)) {
                 getChildren().removeAll(damageViewer);
             }
         });
 
+        bus.<Predicate<Card>>setGuiReaction(responseType.name(),
+                filter -> damageViewer.setupDecks(playerSetupDeck, opponentSetupDeck, bus, filter));
+
         return () -> {
             damageViewer.clear();
-
-            opponentSetupDeck.getCards().forEach(damageViewer::addOpponentCard);
-            playerSetupDeck.getCards().forEach(damageViewer::addPlayerCard);
-            damageViewer.repaint();
-
             getChildren().removeAll(damageViewer);
             positionElement(damageViewer, damageViewerBorder / 2, damageViewerBorder / 2);
+            bus.sendCommunicate(requestType.name(), responseType.name());
         };
     }
 }
