@@ -3,22 +3,19 @@ package pl.khuzzuk.battles.decks;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import pl.khuzzuk.battles.cards.Card;
-
-import java.util.List;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 public class BattleSetup {
-    private List<Card> back;
-    private List<Card> left;
-    private List<Card> center;
-    private List<Card> right;
+    private Deck back;
+    private Deck left;
+    private Deck center;
+    private Deck right;
 
-    public static BattleSetup get(List<Card> back,
-                                  List<Card> left,
-                                  List<Card> center,
-                                  List<Card> right) {
+    public static BattleSetup get(Deck back,
+                                  Deck left,
+                                  Deck center,
+                                  Deck right) {
         BattleSetup setup = new BattleSetup();
         setup.back = back;
         setup.left = left;

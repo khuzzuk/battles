@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import pl.khuzzuk.battles.EventTypes.Stages;
 import pl.khuzzuk.battles.cards.Card;
 import pl.khuzzuk.battles.decks.BattleSetup;
+import pl.khuzzuk.battles.decks.Deck;
 import pl.khuzzuk.messaging.Bus;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
@@ -94,16 +95,16 @@ public class BattleSetupViewer extends PositionablePane {
         int cardsOnTable = battleDeck.size();
         int cardsInPlay = cardsOnHand + cardsOnTable;
         return cardsInPlay / 2 > cardsOnHand
-                && !battleDeck.getLeftDeck().isEmpty()
-                && !battleDeck.getCenterDeck().isEmpty()
-                && !battleDeck.getRightDeck().isEmpty();
+                && !battleDeck.getLeftDeck().getDeck().isEmpty()
+                && !battleDeck.getCenterDeck().getDeck().isEmpty()
+                && !battleDeck.getRightDeck().getDeck().isEmpty();
     }
 
     private void toBattleStage() {
         bus.send(Stages.FORMATION_READY.name(), BattleSetup.get(
-                deck.getCardsFromDeck(),
-                battleDeck.getLeftDeck(),
-                battleDeck.getCenterDeck(),
-                battleDeck.getRightDeck()));
+                Deck.get(deck.getCardsFromDeck()),
+                Deck.get(battleDeck.getLeftDeck().getCardsFromDeck()),
+                Deck.get(battleDeck.getCenterDeck().getCardsFromDeck()),
+                Deck.get(battleDeck.getRightDeck().getCardsFromDeck())));
     }
 }

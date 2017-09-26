@@ -6,6 +6,7 @@ import pl.khuzzuk.battles.EventTypes.Stages;
 import pl.khuzzuk.battles.cards.Card;
 import pl.khuzzuk.battles.cards.CardRepository;
 import pl.khuzzuk.battles.decks.BattleSetup;
+import pl.khuzzuk.battles.decks.Deck;
 import pl.khuzzuk.messaging.Bus;
 
 import java.util.ArrayList;
@@ -42,12 +43,12 @@ public class PlayStage {
                 fillRandomly(availableCards, 4));
     }
 
-    private static List<Card> fillRandomly(List<Card> cards, int size) {
+    private static Deck fillRandomly(List<Card> cards, int size) {
         Random random = new Random();
         List<Card> backCards = new ArrayList<>();
         for (int i = 0; i < size; i++) {
             backCards.add(cards.get(random.nextInt(cards.size())));
         }
-        return backCards;
+        return Deck.get(backCards);
     }
 }

@@ -2,12 +2,12 @@ package pl.khuzzuk.battles.ui;
 
 import javafx.scene.shape.Rectangle;
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import pl.khuzzuk.battles.cards.Card;
 
-import java.util.List;
-
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+@Getter
 class BattleDecks extends PositionablePane {
     private DeckViewer leftDeck;
     private DeckViewer centerDeck;
@@ -94,15 +94,9 @@ class BattleDecks extends PositionablePane {
         return leftDeck.size() + centerDeck.size() + rightDeck.size();
     }
 
-    List<Card> getLeftDeck() {
-        return leftDeck.getCardsFromDeck();
-    }
-
-    List<Card> getCenterDeck() {
-        return centerDeck.getCardsFromDeck();
-    }
-
-    List<Card> getRightDeck() {
-        return rightDeck.getCardsFromDeck();
+    void clear() {
+        leftDeck.clear();
+        centerDeck.clear();
+        rightDeck.clear();
     }
 }

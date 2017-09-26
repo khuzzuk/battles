@@ -6,14 +6,11 @@ import javafx.scene.layout.AnchorPane;
 import lombok.AccessLevel;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import pl.khuzzuk.battles.EventTypes;
 import pl.khuzzuk.battles.EventTypes.Stages;
-import pl.khuzzuk.battles.cards.Card;
 import pl.khuzzuk.battles.decks.BattleSetup;
+import pl.khuzzuk.battles.decks.Deck;
 import pl.khuzzuk.functions.MultiGate;
 import pl.khuzzuk.messaging.Bus;
-
-import java.util.Collection;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class BattleView extends PositionablePane {
@@ -66,7 +63,7 @@ public class BattleView extends PositionablePane {
         playerBattleDecks.repaintDecks();
 
         DeckViewer playersBack = DeckViewer.get((int) getWidth(), (int) deckHeight);
-        playerSetup.getBack().forEach(playersBack::addCard);
+        playerSetup.getBack().getCards().forEach(playersBack::addCard);
         playersBack.repaintDeck();
         positionElement(playersBack, 0d, menuManager.menuHeight + deckHeight * 2);
         battleReady.on(0);
@@ -85,22 +82,14 @@ public class BattleView extends PositionablePane {
     }
 
     private void fillBattleDecksViewer(BattleDecks decks, BattleSetup setup) {
-        setup.getLeft().forEach(decks::addToLeft);
-        setup.getCenter().forEach(decks::addToCenter);
-        setup.getRight().forEach(decks::addToRight);
+        setup.getLeft().getCards().forEach(decks::addToLeft);
+        setup.getCenter().getCards().forEach(decks::addToCenter);
+        setup.getRight().getCards().forEach(decks::addToRight);
     }
 
-    private Runnable showDamageViewerEventHandler(Collection<Card> playerSetupDeck, Collection<Card> opponentSetupDeck) {
-        DeckViewer playerDeck = SelectableDeckViewer.get(
-                getWidth() - damageViewerBorder,
-                (getHeight() - damageViewerBorder) / 2, bus, EventTypes.User.SELECT_CARD);
-
-        DeckViewer opponentDeck = SelectableDeckViewer.get(
-                getWidth() - damageViewerBorder,
-                (getHeight() - damageViewerBorder) / 2, bus, EventTypes.User.SELECT_OPPONENT_CARD);
-
+    private Runnable showDamageViewerEventHandler(Deck playerSetupDeck, Deck opponentSetupDeck) {
         DamageViewer damageViewer = DamageViewer.get(getWidth() - damageViewerBorder,
-                getHeight() - damageViewerBorder, playerDeck, opponentDeck);
+                getHeight() - damageViewerBorder, playerSetupDeck, opponentSetupDeck, bus);
         damageViewer.setOnMouseClicked(event -> {
             if (event.getButton().equals(MouseButton.SECONDARY)) {
                 getChildren().removeAll(damageViewer);
@@ -108,13 +97,11 @@ public class BattleView extends PositionablePane {
         });
 
         return () -> {
-            opponentDeck.clear();
-            opponentSetupDeck.forEach(opponentDeck::addCard);
-            opponentDeck.repaintDeck();
+            damageViewer.clear();
 
-            playerDeck.clear();
-            playerSetupDeck.forEach(playerDeck::addCard);
-            playerDeck.repaintDeck();
+            opponentSetupDeck.getCards().forEach(damageViewer::addOpponentCard);
+            playerSetupDeck.getCards().forEach(damageViewer::addPlayerCard);
+            damageViewer.repaint();
 
             getChildren().removeAll(damageViewer);
             positionElement(damageViewer, damageViewerBorder / 2, damageViewerBorder / 2);
