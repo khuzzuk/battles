@@ -9,8 +9,11 @@ import lombok.RequiredArgsConstructor;
 import pl.khuzzuk.battles.EventTypes.Stages;
 import pl.khuzzuk.battles.decks.BattleSetup;
 import pl.khuzzuk.battles.decks.Deck;
+import pl.khuzzuk.battles.ui.decorators.FocusableDecorator;
 import pl.khuzzuk.functions.MultiGate;
 import pl.khuzzuk.messaging.Bus;
+
+import java.util.Collections;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class BattleView extends PositionablePane {
@@ -62,7 +65,7 @@ public class BattleView extends PositionablePane {
         positionElement(playerBattleDecks, 0d, menuManager.menuHeight + deckHeight);
         playerBattleDecks.repaintDecks();
 
-        DeckViewer playersBack = DeckViewer.get((int) getWidth(), (int) deckHeight);
+        DeckViewer playersBack = DeckViewer.get((int) getWidth(), (int) deckHeight, Collections.singletonList(new FocusableDecorator()));
         playerSetup.getBack().getCards().forEach(playersBack::addCard);
         playersBack.repaintDeck();
         positionElement(playersBack, 0d, menuManager.menuHeight + deckHeight * 2);

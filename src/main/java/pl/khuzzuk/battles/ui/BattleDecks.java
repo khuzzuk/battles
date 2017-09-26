@@ -5,6 +5,9 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import pl.khuzzuk.battles.cards.Card;
+import pl.khuzzuk.battles.ui.decorators.FocusableDecorator;
+
+import java.util.Collections;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
@@ -30,7 +33,7 @@ class BattleDecks extends PositionablePane {
     private DeckViewer addDeck(int fromLeft) {
         double leftAnchor = getWidth() / 3 * fromLeft;
         positionElement(new Rectangle(getWidth() / 3, getHeight()), leftAnchor, 0d);
-        DeckViewer deckViewer = DeckViewer.get((int) getWidth() / 3, (int) getHeight());
+        DeckViewer deckViewer = DeckViewer.get((int) getWidth() / 3, (int) getHeight(), Collections.singletonList(new FocusableDecorator()));
         positionElement(deckViewer,
                 leftAnchor, 0d);
         return deckViewer;

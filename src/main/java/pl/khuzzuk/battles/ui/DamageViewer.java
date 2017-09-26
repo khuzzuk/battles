@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import pl.khuzzuk.battles.EventTypes;
 import pl.khuzzuk.battles.cards.Card;
 import pl.khuzzuk.battles.decks.Deck;
+import pl.khuzzuk.battles.ui.decorators.CardDecorator;
 import pl.khuzzuk.messaging.Bus;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -35,8 +36,8 @@ class DamageViewer extends PositionablePane {
         MenuManager menuManager = MenuManager.get();
         menuManager.addButton("Resolve", true, getChildren());
         int deckHeight = (int) ((getHeight() - MenuManager.menuHeight) / 2);
-        playerDeckViewer = DeckViewer.get((int) getWidth(), deckHeight, );
-        opponentDeckViewer = SelectableDeckViewer.get((int) getWidth(), deckHeight, bus, EventTypes.User.SELECT_OPPONENT_CARD);
+        playerDeckViewer = DeckViewer.get((int) getWidth(), deckHeight, CardDecorator.getSelectableDecorators(bus, EventTypes.User.SELECT_CARD));
+        opponentDeckViewer = DeckViewer.get((int) getWidth(), deckHeight, CardDecorator.getSelectableDecorators(bus, EventTypes.User.SELECT_OPPONENT_CARD));
         combineDecks(playerDeck, playerDeckViewer);
         combineDecks(opponentDeck, opponentDeckViewer);
         positionElement(playerDeckViewer, 0d, (double) MenuManager.menuHeight);
