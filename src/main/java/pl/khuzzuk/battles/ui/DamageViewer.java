@@ -38,7 +38,7 @@ class DamageViewer extends PositionablePane {
 
     void setupDecks(Deck playerDeck, Deck opponentDeck, Bus bus, Predicate<Card> decoratorFilter) {
         clear();
-        int deckHeight = (int) ((getHeight() - MenuManager.menuHeight) / 2);
+        int deckHeight = (int) ((getHeight() - MenuManager.MENU_HEIGHT) / 2);
 
         playerDeckViewer = DeckViewer.get((int) getWidth(), deckHeight, CardDecoratorManager.get()
                 .addFiltered(decoratorFilter, new SelectableDecorator(EventTypes.User.SELECT_CARD, bus))
@@ -49,8 +49,8 @@ class DamageViewer extends PositionablePane {
 
         combineDecks(playerDeck, playerDeckViewer);
         combineDecks(opponentDeck, opponentDeckViewer);
-        positionElement(playerDeckViewer, 0d, (double) MenuManager.menuHeight);
-        positionElement(opponentDeckViewer, 0d, getHeight() / 2 + (double) MenuManager.menuHeight);
+        positionElement(playerDeckViewer, 0d, getHeight() / 2 + (double) MenuManager.MENU_HEIGHT);
+        positionElement(opponentDeckViewer, 0d, (double) MenuManager.MENU_HEIGHT);
         repaint();
     }
 
@@ -62,15 +62,7 @@ class DamageViewer extends PositionablePane {
         deck.getCards().forEach(deckViewer::addCard);
     }
 
-    void addPlayerCard(Card card) {
-        playerDeckViewer.addCard(card);
-    }
-
-    void addOpponentCard(Card card) {
-        opponentDeckViewer.addCard(card);
-    }
-
-    void repaint() {
+    private void repaint() {
         playerDeckViewer.repaintDeck();
         opponentDeckViewer.repaintDeck();
     }

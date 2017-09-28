@@ -3,6 +3,10 @@ package pl.khuzzuk.battles.decks;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import pl.khuzzuk.battles.cards.Card;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
@@ -22,5 +26,12 @@ public class BattleSetup {
         setup.center = center;
         setup.right = right;
         return setup;
+    }
+
+    public List<Card> getAllCardsInPlay() {
+        List<Card> cards = new ArrayList<>(left.getCards());
+        cards.addAll(center.getCards());
+        cards.addAll(right.getCards());
+        return cards;
     }
 }

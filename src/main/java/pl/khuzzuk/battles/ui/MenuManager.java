@@ -12,7 +12,7 @@ import java.util.List;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 class MenuManager {
-    static final int menuHeight = 60;
+    static final int MENU_HEIGHT = 60;
     @NonNull
     private List<Button> menuButtons;
 

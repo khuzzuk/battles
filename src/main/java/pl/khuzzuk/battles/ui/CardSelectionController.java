@@ -7,7 +7,7 @@ import pl.khuzzuk.messaging.Bus;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CardSelectionController {
-    private static Runnable emptyDeselection = () -> {};
+    private static Runnable emptyDeselection = () -> {/*suppress warnings*/};
     private static Switcher emptySwitcher = Switcher.get(emptyDeselection , emptyDeselection);
     private Switcher switcher;
     public static CardSelectionController get(Bus bus, Enum<?> event) {

@@ -35,11 +35,6 @@ public class CardDecoratorManager {
         return this;
     }
 
-    public CardDecoratorManager clearFiltered() {
-        filtered.clear();
-        return this;
-    }
-
     public void handle(CardViewer cardViewer, DeckViewer deckViewer) {
         filtered.entrySet().stream()
                 .filter(entry -> entry.getKey().test(cardViewer.getCard()))

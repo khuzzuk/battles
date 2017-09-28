@@ -15,6 +15,8 @@ import pl.khuzzuk.battles.ui.decorators.CardDecoratorManager;
 import pl.khuzzuk.battles.ui.decorators.FocusableDecorator;
 import pl.khuzzuk.messaging.Bus;
 
+import static pl.khuzzuk.battles.ui.MenuManager.MENU_HEIGHT;
+
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class BattleSetupViewer extends PositionablePane {
     @NonNull
@@ -30,7 +32,7 @@ public class BattleSetupViewer extends PositionablePane {
         viewer.setWidth(width);
         viewer.setHeight(height);
         viewer.menuManager = MenuManager.get();
-        viewer.deckHeight = (height - viewer.menuManager.menuHeight) / 2d;
+        viewer.deckHeight = (height - MENU_HEIGHT) / 2d;
         viewer.setupMenu();
         viewer.setupPlayerTable();
         viewer.setupDeckViewer();
@@ -45,14 +47,14 @@ public class BattleSetupViewer extends PositionablePane {
     private void setupDeckViewer() {
         Rectangle deckArea = new Rectangle(getWidth(), deckHeight);
         deck = DeckViewer.get((int) getWidth(), (int) deckHeight, CardDecoratorManager.get().addUnfiltered(new FocusableDecorator()));
-        double topAnchor = deckHeight + MenuManager.menuHeight;
+        double topAnchor = deckHeight + MENU_HEIGHT;
         positionElement(deckArea, 0d, topAnchor);
         positionElement(deck, 0d, topAnchor);
     }
 
     private void setupPlayerTable() {
         battleDeck = BattleDecks.get(getWidth(), deckHeight);
-        positionElement(battleDeck, 0d, MenuManager.menuHeight);
+        positionElement(battleDeck, 0d, MENU_HEIGHT);
     }
 
     public void addCardToDeck(Card card) {

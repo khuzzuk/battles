@@ -3,6 +3,7 @@ package pl.khuzzuk.battles.cards;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.experimental.Wither;
 import pl.khuzzuk.battles.equipment.Equipment;
 import pl.khuzzuk.battles.model.Reach;
 import pl.khuzzuk.battles.model.Speed;
@@ -18,6 +19,7 @@ public class Card {
     private int defence;
     private Speed speed;
     private Reach reach;
+    @Wither
     private int morale;
     private int cost;
     private List<Equipment> equipment;

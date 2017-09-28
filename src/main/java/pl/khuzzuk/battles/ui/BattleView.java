@@ -39,7 +39,7 @@ public class BattleView extends PositionablePane {
         battleView.setMinHeight(height);
         battleView.damageViewerBorder = width * 0.05;
         battleView.menuManager = MenuManager.get();
-        battleView.deckHeight = (height - MenuManager.menuHeight) / 3d;
+        battleView.deckHeight = (height - MenuManager.MENU_HEIGHT) / 3d;
         battleView.setupDamageViewers();
         bus.setGuiReaction(Stages.BATTLE_START_PLAYER.name(), battleView::setPlayerSetup);
         bus.setGuiReaction(Stages.BATTLE_START_OPPONENT.name(), battleView::setOpponentSetup);
@@ -67,13 +67,13 @@ public class BattleView extends PositionablePane {
 
         playerBattleDecks = BattleDecks.get(getWidth(), deckHeight);
         fillBattleDecksViewer(playerBattleDecks, playerSetup);
-        positionElement(playerBattleDecks, 0d, MenuManager.menuHeight + deckHeight);
+        positionElement(playerBattleDecks, 0d, MenuManager.MENU_HEIGHT + deckHeight);
         playerBattleDecks.repaintDecks();
 
         DeckViewer playersBack = DeckViewer.get((int) getWidth(), (int) deckHeight, CardDecoratorManager.get().addUnfiltered(new FocusableDecorator()));
         playerSetup.getBack().getCards().forEach(playersBack::addCard);
         playersBack.repaintDeck();
-        positionElement(playersBack, 0d, MenuManager.menuHeight + deckHeight * 2);
+        positionElement(playersBack, 0d, MenuManager.MENU_HEIGHT + deckHeight * 2);
         battleReady.on(0);
     }
 
@@ -82,7 +82,7 @@ public class BattleView extends PositionablePane {
         opponentBattleDecks = BattleDecks.get(getWidth(), deckHeight);
         fillBattleDecksViewer(opponentBattleDecks, opponentSetup);
         AnchorPane.setLeftAnchor(opponentBattleDecks, 0d);
-        AnchorPane.setTopAnchor(opponentBattleDecks, (double) MenuManager.menuHeight);
+        AnchorPane.setTopAnchor(opponentBattleDecks, (double) MenuManager.MENU_HEIGHT);
         opponentBattleDecks.repaintDecks();
         getChildren().add(opponentBattleDecks);
         opponentBattleDecks.toBack();
