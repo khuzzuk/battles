@@ -103,6 +103,7 @@ class CardContentFrame extends PositionablePane implements Hexagonal, Decorative
         addIcon(0, 2, String.valueOf(card.getStrength()));
         addIcon(0, 4, String.valueOf(card.getSpeed().value));
         addIcon(0, 6, String.valueOf(card.getDefence()));
+        addIcon(1, 7, String.valueOf(card.getReach().getDistance()));
         addIcon(7, 7, String.valueOf(card.getCost()));
     }
 

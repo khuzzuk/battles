@@ -2,7 +2,7 @@ package pl.khuzzuk.battles.stages;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import pl.khuzzuk.battles.EventTypes;
+import pl.khuzzuk.battles.EventTypes.Stages;
 import pl.khuzzuk.battles.cards.Card;
 import pl.khuzzuk.battles.decks.BattleSetup;
 import pl.khuzzuk.battles.decks.Deck;
@@ -12,10 +12,11 @@ import pl.khuzzuk.battles.model.Side;
 import pl.khuzzuk.messaging.Bus;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -35,21 +36,29 @@ public class DamageResolver {
     }
 
     private void subscribeOn(Bus bus) {
-        battleSetups = new HashMap<>();
+        battleSetups = new EnumMap<>(Side.class);
         this.bus = bus;
-        bus.<BattleSetup>setReaction(EventTypes.Stages.BATTLE_START_PLAYER.name(), setup -> {
+        bus.<BattleSetup>setReaction(Stages.BATTLE_START_PLAYER.name(), setup -> {
             battleSetups.put(Side.PLAYER, setup);
             restartDamageStage();
         });
-        bus.<BattleSetup>setReaction(EventTypes.Stages.BATTLE_START_OPPONENT.name(), setup -> {
+        bus.<BattleSetup>setReaction(Stages.BATTLE_START_OPPONENT.name(), setup -> {
             battleSetups.put(Side.OPPONENT, setup);
             restartDamageStage();
         });
 
-        bus.setReaction(EventTypes.Stages.GET_DAMAGE_STAGE_LEFT.name(), () ->
-                bus.send(EventTypes.Stages.SHOW_DAMAGE_STAGE_LEFT.name(), getDamageStageFilter(
-                        battleSetups.get(Side.PLAYER).getLeft(),
-                        battleSetups.get(Side.OPPONENT).getLeft())));
+        setDamageStageResponse(bus, Stages.GET_DAMAGE_STAGE_LEFT, Stages.SHOW_DAMAGE_STAGE_LEFT,
+                () -> battleSetups.get(Side.PLAYER).getLeft(), () -> battleSetups.get(Side.OPPONENT).getLeft());
+        setDamageStageResponse(bus, Stages.GET_DAMAGE_STAGE_CENTER, Stages.SHOW_DAMAGE_STAGE_CENTER,
+                () -> battleSetups.get(Side.PLAYER).getCenter(), () -> battleSetups.get(Side.OPPONENT).getCenter());
+        setDamageStageResponse(bus, Stages.GET_DAMAGE_STAGE_RIGHT, Stages.SHOW_DAMAGE_STAGE_RIGHT,
+                () -> battleSetups.get(Side.PLAYER).getRight(), () -> battleSetups.get(Side.OPPONENT).getRight());
+    }
+
+    private void setDamageStageResponse(Bus bus, Enum<?> requestType, Enum<?> responseType,
+                                        Supplier<Deck> playerDeck, Supplier<Deck> opponentDeck) {
+        bus.setReaction(requestType.name(), () -> bus.send(responseType.name(), getDamageStageFilter(
+                playerDeck.get(), opponentDeck.get())));
     }
 
     private Predicate<Card> getDamageStageFilter(Deck playerDeck, Deck opponentDeck) {
