@@ -7,30 +7,29 @@ import pl.khuzzuk.battles.cards.Card;
 import pl.khuzzuk.battles.decks.BattleSetup;
 import pl.khuzzuk.battles.decks.Deck;
 import pl.khuzzuk.battles.model.DamageAction;
-import pl.khuzzuk.battles.model.Reach;
+import pl.khuzzuk.battles.model.DamageOrder;
 import pl.khuzzuk.battles.model.Side;
 import pl.khuzzuk.messaging.Bus;
 
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-import java.util.stream.Stream;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class DamageResolver {
     private Bus bus;
     private Map<Side, BattleSetup> battleSetups;
-    private int leftDamageStage;
-    private int centerDamageStage;
-    private int rightDamageStage;
-    private List<Card> notUsed;
+    private SortedMap<DamageOrder, List<Card>> leftDamageStage;
+    private SortedMap<DamageOrder, List<Card>> centerDamageStage;
+    private SortedMap<DamageOrder, List<Card>> rightDamageStage;
+    private static Function<Card, Integer> distanceMapper = card -> card.getReach().getDistance();
 
     public static DamageResolver get(Bus bus) {
         DamageResolver damageResolver = new DamageResolver();
-        damageResolver.notUsed = new ArrayList<>();
+        damageResolver.leftDamageStage = new TreeMap<>();
+        damageResolver.centerDamageStage = new TreeMap<>();
+        damageResolver.rightDamageStage = new TreeMap<>();
         damageResolver.subscribeOn(bus);
         return damageResolver;
     }
@@ -47,32 +46,36 @@ public class DamageResolver {
             restartDamageStage();
         });
 
-        setDamageStageResponse(bus, Stages.GET_DAMAGE_STAGE_LEFT, Stages.SHOW_DAMAGE_STAGE_LEFT,
-                () -> battleSetups.get(Side.PLAYER).getLeft(), () -> battleSetups.get(Side.OPPONENT).getLeft());
-        setDamageStageResponse(bus, Stages.GET_DAMAGE_STAGE_CENTER, Stages.SHOW_DAMAGE_STAGE_CENTER,
-                () -> battleSetups.get(Side.PLAYER).getCenter(), () -> battleSetups.get(Side.OPPONENT).getCenter());
-        setDamageStageResponse(bus, Stages.GET_DAMAGE_STAGE_RIGHT, Stages.SHOW_DAMAGE_STAGE_RIGHT,
-                () -> battleSetups.get(Side.PLAYER).getRight(), () -> battleSetups.get(Side.OPPONENT).getRight());
+        setDamageStageResponse(bus, Stages.GET_DAMAGE_STAGE_LEFT, Stages.SHOW_DAMAGE_STAGE_LEFT, () -> leftDamageStage);
+        setDamageStageResponse(bus, Stages.GET_DAMAGE_STAGE_CENTER, Stages.SHOW_DAMAGE_STAGE_CENTER, () -> centerDamageStage);
+        setDamageStageResponse(bus, Stages.GET_DAMAGE_STAGE_RIGHT, Stages.SHOW_DAMAGE_STAGE_RIGHT, () -> rightDamageStage);
     }
 
     private void setDamageStageResponse(Bus bus, Enum<?> requestType, Enum<?> responseType,
-                                        Supplier<Deck> playerDeck, Supplier<Deck> opponentDeck) {
-        bus.setReaction(requestType.name(), () -> bus.send(responseType.name(), getDamageStageFilter(
-                playerDeck.get(), opponentDeck.get())));
+                                        Supplier<SortedMap<DamageOrder, List<Card>>> damageStage) {
+        bus.setReaction(requestType.name(), () -> bus.send(responseType.name(), getDamageStageFilter(damageStage.get())));
     }
 
-    private Predicate<Card> getDamageStageFilter(Deck playerDeck, Deck opponentDeck) {
-        int actualState = Stream.concat(playerDeck.getCards().stream(), opponentDeck.getCards().stream())
-                .filter(notUsed::contains)
-                .map(Card::getReach)
-                .mapToInt(Reach::getDistance)
-                .max().orElse(0);
-        return card -> notUsed.contains(card) && card.getReach().getDistance() >= actualState;
+    private Predicate<Card> getDamageStageFilter(SortedMap<DamageOrder, List<Card>> damageStage) {
+        return card -> damageStage.get(damageStage.lastKey()).contains(card);
     }
 
     private void restartDamageStage() {
-        notUsed.clear();
-        battleSetups.values().forEach(battleSetup -> notUsed.addAll(battleSetup.getAllCardsInPlay()));
+        BattleSetup playerSetup = battleSetups.get(Side.PLAYER);
+        BattleSetup opponentSetup = battleSetups.get(Side.OPPONENT);
+
+        mapCards(playerSetup.getLeft().getCards(), leftDamageStage);
+        mapCards(opponentSetup.getLeft().getCards(), leftDamageStage);
+        mapCards(playerSetup.getCenter().getCards(), centerDamageStage);
+        mapCards(opponentSetup.getCenter().getCards(), centerDamageStage);
+        mapCards(playerSetup.getRight().getCards(), rightDamageStage);
+        mapCards(opponentSetup.getRight().getCards(), rightDamageStage);
+    }
+
+    private void mapCards(List<Card> cards, Map<DamageOrder, List<Card>> damageStage) {
+        cards.forEach(card -> damageStage.computeIfAbsent(
+                new DamageOrder(card.getReach(), card.getSpeed()),
+                damageOrder -> new ArrayList<>()).add(card));
     }
 
     private void resolveLeftWing(DamageAction damageAction) {
