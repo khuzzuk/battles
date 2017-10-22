@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.experimental.Wither;
 import pl.khuzzuk.battles.equipment.Equipment;
+import pl.khuzzuk.battles.model.DamageOrder;
 import pl.khuzzuk.battles.model.Reach;
 import pl.khuzzuk.battles.model.Speed;
 
@@ -24,4 +25,8 @@ public class Card {
     private int cost;
     private List<Equipment> equipment;
     private CardStyle style;
+
+    public DamageOrder getDamageOrder() {
+        return new DamageOrder(reach, speed);
+    }
 }

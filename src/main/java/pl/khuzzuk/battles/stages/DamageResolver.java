@@ -9,21 +9,19 @@ import pl.khuzzuk.battles.decks.Deck;
 import pl.khuzzuk.battles.model.DamageAction;
 import pl.khuzzuk.battles.model.DamageOrder;
 import pl.khuzzuk.battles.model.Side;
+import pl.khuzzuk.functions.MultiGate;
 import pl.khuzzuk.messaging.Bus;
 
 import java.util.*;
-import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class DamageResolver {
-    private Bus bus;
     private Map<Side, BattleSetup> battleSetups;
     private SortedMap<DamageOrder, List<Card>> leftDamageStage;
     private SortedMap<DamageOrder, List<Card>> centerDamageStage;
     private SortedMap<DamageOrder, List<Card>> rightDamageStage;
-    private static Function<Card, Integer> distanceMapper = card -> card.getReach().getDistance();
 
     public static DamageResolver get(Bus bus) {
         DamageResolver damageResolver = new DamageResolver();
@@ -36,14 +34,15 @@ public class DamageResolver {
 
     private void subscribeOn(Bus bus) {
         battleSetups = new EnumMap<>(Side.class);
-        this.bus = bus;
+        MultiGate whenReady = MultiGate.of(2, this::restartDamageStage, () -> {/*do nothing*/});
+
         bus.<BattleSetup>setReaction(Stages.BATTLE_START_PLAYER.name(), setup -> {
             battleSetups.put(Side.PLAYER, setup);
-            restartDamageStage();
+            whenReady.on(0);
         });
         bus.<BattleSetup>setReaction(Stages.BATTLE_START_OPPONENT.name(), setup -> {
             battleSetups.put(Side.OPPONENT, setup);
-            restartDamageStage();
+            whenReady.on(1);
         });
 
         setDamageStageResponse(bus, Stages.GET_DAMAGE_STAGE_LEFT, Stages.SHOW_DAMAGE_STAGE_LEFT, () -> leftDamageStage);
@@ -73,9 +72,8 @@ public class DamageResolver {
     }
 
     private void mapCards(List<Card> cards, Map<DamageOrder, List<Card>> damageStage) {
-        cards.forEach(card -> damageStage.computeIfAbsent(
-                new DamageOrder(card.getReach(), card.getSpeed()),
-                damageOrder -> new ArrayList<>()).add(card));
+        cards.forEach(card -> damageStage.computeIfAbsent(card.getDamageOrder(),
+                any -> new ArrayList<>()).add(card));
     }
 
     private void resolveLeftWing(DamageAction damageAction) {
@@ -85,8 +83,9 @@ public class DamageResolver {
 
     private void resolveDamageAction(DamageAction damageAction, Deck defenders) {
         defenders.getCards().remove(damageAction.getDefender());
-        defenders.getCards().add(damageAction.getDefender()
-                .withMorale(calculateDamage(damageAction.getAttacker(), damageAction.getDefender())));
+        Card afterDamage = damageAction.getDefender()
+                .withMorale(calculateDamage(damageAction.getAttacker(), damageAction.getDefender()));
+        defenders.getCards().add(afterDamage);
     }
 
     private int calculateDamage(Card attacker, Card defender) {
