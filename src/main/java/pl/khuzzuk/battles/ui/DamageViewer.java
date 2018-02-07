@@ -19,7 +19,7 @@ class DamageViewer extends PositionablePane {
     private DeckViewer playerDeckViewer;
     private DeckViewer opponentDeckViewer;
 
-    static DamageViewer get(double startingWidth, double startingHeight) {
+    static DamageViewer create(double startingWidth, double startingHeight) {
         DamageViewer damageViewer = new DamageViewer();
         damageViewer.setWidth(startingWidth);
         damageViewer.setHeight(startingHeight);

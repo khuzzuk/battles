@@ -38,7 +38,7 @@ public class CardDecoratorManager {
     public void handle(CardViewer cardViewer, DeckViewer deckViewer) {
         filtered.entrySet().stream()
                 .filter(entry -> entry.getKey().test(cardViewer.getCard()))
-        .forEach(entry -> entry.getValue().addBehavior(deckViewer, cardViewer));
+                .forEach(entry -> entry.getValue().addBehavior(deckViewer, cardViewer));
         unfiltered.forEach(decorator -> decorator.addBehavior(deckViewer, cardViewer));
     }
 }

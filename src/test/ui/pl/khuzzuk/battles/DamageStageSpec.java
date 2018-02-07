@@ -29,7 +29,7 @@ public class DamageStageSpec extends Application {
         stage.setScene(new Scene(root));
         stage.show();
 
-        CardRepository cardRepository = CardRepository.get();
+        CardRepository cardRepository = CardRepository.create();
 
         int width = (int) stage.getScene().getWidth();
         int height = (int) stage.getScene().getHeight();

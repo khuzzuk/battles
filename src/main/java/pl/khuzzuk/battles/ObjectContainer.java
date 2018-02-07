@@ -11,7 +11,7 @@ import pl.khuzzuk.messaging.Bus;
 @UtilityClass
 class ObjectContainer {
     static void putBeans(Bus bus) {
-        putToContainer(bus, Container.GET_CARD_REPO, CardRepository.get());
+        putToContainer(bus, Container.GET_CARD_REPO, CardRepository.create());
         putToContainer(bus, Container.GET_PLAY_STAGE, PlayStage.get(bus));
         putToContainer(bus, Container.GET_CARD_SELECTION_CONTROLLER, CardSelectionController.get(bus, EventTypes.User.SELECT_CARD));
         putToContainer(bus, Container.GET_OPPONENT_CARD_SELECTION_CONTROLLER, CardSelectionController.get(bus, EventTypes.User.SELECT_OPPONENT_CARD));

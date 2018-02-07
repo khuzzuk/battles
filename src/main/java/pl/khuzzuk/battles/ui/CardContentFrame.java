@@ -17,14 +17,14 @@ class CardContentFrame extends PositionablePane implements Hexagonal, Decorative
     private final int hexR;
     private final Image background;
     private double frameScale;
-    private int iconsR;
+    private double iconsR;
     private Path outer;
     private Path inner;
 
     static CardContentFrame get(Card card, Image background, int hexSize) {
         CardContentFrame frame = new CardContentFrame(hexSize, background);
         frame.frameScale = frame.hexR / 8d;
-        frame.iconsR = (int) (frame.hexR - frame.frameScale * 1.5);
+        frame.iconsR = frame.hexR - frame.frameScale * 1.5;
         frame.setupShape();
         frame.addCardParams(card);
         return frame;
@@ -108,19 +108,21 @@ class CardContentFrame extends PositionablePane implements Hexagonal, Decorative
     }
 
     private void addIcon(int row, int col, String content) {
-        int x = getCol(col, hexR);
-        double topAnchor = (hexR * 3d / 2 + 0.25) * row + frameScale * 2;
-        double leftAnchor = x + frameScale * 2 - 1;
+        double x = getCol(col, hexR);
+        double topAnchor = (hexR * 3d / 2) * row + frameScale * 3 / 2;
+        double leftAnchor = x + hexR / 6d;
 
-        Path icon = getHex(0, 0, iconsR);
+        Path icon = getHex(0, 0, (int) iconsR);
         setBackground(background, icon);
         addDropShadow(icon);
         positionElement(icon, leftAnchor, topAnchor);
 
-        Path innerIcon = getHex(0, 0, (int) (iconsR - frameScale / 2));
+        double innerSize = iconsR - frameScale / 1.5;
+        double innerBorderSize = frameScale / 1.75;
+        Path innerIcon = getHex(0, 0, (int) innerSize);
         setBackground(background, innerIcon);
         addInnerShadow(innerIcon);
-        positionElement(innerIcon, leftAnchor + frameScale, topAnchor + frameScale);
+        positionElement(innerIcon, leftAnchor + innerBorderSize, topAnchor + innerBorderSize);
 
         HBox textBox = new HBox();
         Label text = new Label(content);

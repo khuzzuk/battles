@@ -13,7 +13,7 @@ import javafx.scene.shape.Path;
  * __0 <br/>
  */
 public interface Hexagonal {
-    default LineTo[] drawLines(int x, int y, int r, int[] points) {
+    default LineTo[] drawLines(int x, int y, double r, int[] points) {
         LineTo[] drawing = new LineTo[points.length];
         for (int i = 0; i < points.length; i++) {
             double rad = Math.toRadians((double) 60 * points[i]);
@@ -23,7 +23,7 @@ public interface Hexagonal {
         return drawing;
     }
 
-    default MoveTo getStartingPoint(int x, int y, int r, int point) {
+    default MoveTo getStartingPoint(int x, int y, double r, int point) {
         double rad = Math.toRadians((double) 60 * point);
         return new MoveTo(getX(x, r, rad), getY(y, r, rad));
     }
@@ -36,7 +36,7 @@ public interface Hexagonal {
         return Math.cos(radians) * r + y;
     }
 
-    default Path getHex(int x, int y, int r) {
+    default Path getHex(int x, int y, double r) {
         Path icon = new Path(getStartingPoint(x, y, r, 0));
         icon.getElements().addAll(drawLines(x, y, r, new int[]{1, 2, 3, 4, 5}));
         icon.getElements().addAll(new ClosePath());

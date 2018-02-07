@@ -19,7 +19,7 @@ public class CardRepository {
     private Map<String, Card> cards;
     private CardStyleRepository styleRepository;
 
-    public static CardRepository get() {
+    public static CardRepository create() {
         CardRepository repository = new CardRepository();
         try {
             repository.styleRepository = CardStyleRepository.get();

@@ -36,6 +36,7 @@ public class BattleView extends PositionablePane {
         battleView.bus = bus;
         battleView.setWidth(width);
         battleView.setMinWidth(width);
+        battleView.setHeight(height);
         battleView.setMinHeight(height);
         battleView.damageViewerBorder = width * 0.05;
         battleView.menuManager = MenuManager.get();
@@ -96,7 +97,7 @@ public class BattleView extends PositionablePane {
     }
 
     private Runnable showDamageViewerEventHandler(Deck playerSetupDeck, Deck opponentSetupDeck, Enum<?> requestType, Enum<?> responseType) {
-        DamageViewer damageViewer = DamageViewer.get(getWidth() - damageViewerBorder,
+        DamageViewer damageViewer = DamageViewer.create(getWidth() - damageViewerBorder,
                 getHeight() - damageViewerBorder);
         damageViewer.setOnMouseClicked(event -> {
             if (event.getButton().equals(MouseButton.SECONDARY)) {

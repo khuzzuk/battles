@@ -6,6 +6,7 @@ import pl.khuzzuk.battles.EventTypes.Stages;
 import pl.khuzzuk.battles.cards.Card;
 import pl.khuzzuk.battles.decks.BattleSetup;
 import pl.khuzzuk.battles.decks.Deck;
+import pl.khuzzuk.battles.functions.Actions;
 import pl.khuzzuk.battles.model.DamageAction;
 import pl.khuzzuk.battles.model.DamageOrder;
 import pl.khuzzuk.battles.model.Side;
@@ -22,6 +23,7 @@ public class DamageResolver {
     private SortedMap<DamageOrder, List<Card>> leftDamageStage;
     private SortedMap<DamageOrder, List<Card>> centerDamageStage;
     private SortedMap<DamageOrder, List<Card>> rightDamageStage;
+    private DamageOrder currentOrder;
 
     public static DamageResolver get(Bus bus) {
         DamageResolver damageResolver = new DamageResolver();
@@ -34,7 +36,7 @@ public class DamageResolver {
 
     private void subscribeOn(Bus bus) {
         battleSetups = new EnumMap<>(Side.class);
-        MultiGate whenReady = MultiGate.of(2, this::restartDamageStage, () -> {/*do nothing*/});
+        MultiGate whenReady = MultiGate.of(2, this::restartDamageStage, Actions.EMPTY_ACTION);
 
         bus.<BattleSetup>setReaction(Stages.BATTLE_START_PLAYER.name(), setup -> {
             battleSetups.put(Side.PLAYER, setup);
@@ -52,7 +54,7 @@ public class DamageResolver {
 
     private void setDamageStageResponse(Bus bus, Enum<?> requestType, Enum<?> responseType,
                                         Supplier<SortedMap<DamageOrder, List<Card>>> damageStage) {
-        bus.setReaction(requestType.name(), () -> bus.send(responseType.name(), getDamageStageFilter(damageStage.get())));
+        bus.setResponse(requestType.name(), () -> bus.send(responseType.name(), getDamageStageFilter(damageStage.get())));
     }
 
     private Predicate<Card> getDamageStageFilter(SortedMap<DamageOrder, List<Card>> damageStage) {
